@@ -128,7 +128,7 @@ class AttentionCnn(BaseSiameseNet):
             X1_agg = tf.reduce_sum(self._X1_comp, 1)
             X2_agg = tf.reduce_sum(self._X2_comp, 1)
             
-            _agg = tf.concat([X1_agg, X2_agg], 1)
+            self._agg = tf.concat([X1_agg, X2_agg], 1)
         
         with tf.name_scope('classifier'):
             L1 = tf.layers.dropout(
