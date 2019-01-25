@@ -6,7 +6,7 @@ from utils.config_helpers import parse_list
 from layers.basics import dropout
 import tensorflow as tf
 
-_conv_projection_size = 300
+_conv_projection_size = 64
 _attention_output_size = 200
 _comparison_output_size = 100
 
