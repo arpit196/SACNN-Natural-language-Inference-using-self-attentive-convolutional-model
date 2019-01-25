@@ -97,8 +97,8 @@ class AttentionCnn(BaseSiameseNet):
             
             e = tf.matmul(e_X1, e_X2, transpose_b=True, name='e')
             
-            self._beta = tf.matmul(self._masked_softmax(e, self.X2_len), self._X2_conv, name='beta2')
-            self._alpha = tf.matmul(self._masked_softmax(tf.transpose(e, [0,2,1]), self.X1_len), self._X1_conv, name='alpha2')
+            self._beta = tf.matmul(self._masked_softmax(e, sequence_len), self._X2_conv, name='beta2')
+            self._alpha = tf.matmul(self._masked_softmax(tf.transpose(e, [0,2,1]), sequence_len), self._X1_conv, name='alpha2')
             
         with tf.name_scope('comparison_layer'):
             X1_comp = tf.layers.dense(
