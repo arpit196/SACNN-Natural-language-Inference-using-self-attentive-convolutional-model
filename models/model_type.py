@@ -7,7 +7,8 @@ from models.bcann import AttentionCnn
 class ModelType(Enum):
     multihead = 0,
     rnn = 1,
-    cnn = 2
+    cnn = 2,
+    bcann = 3
 
 
 MODELS = {
