@@ -2,7 +2,7 @@ from enum import Enum
 from models.cnn import CnnSiameseNet
 from models.lstm import LSTMBasedSiameseNet
 from models.multihead_attention import MultiheadAttentionSiameseNet
-
+from models.bcann import AttentionCnn
 
 class ModelType(Enum):
     multihead = 0,
