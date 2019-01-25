@@ -110,7 +110,7 @@ class AttentionCnn(BaseSiameseNet):
             )
             self._X1_comp = tf.multiply(
                 tf.layers.dropout(X1_comp, rate=self.dropout, training=self.is_training),
-                tf.expand_dims(tf.sequence_mask(self.sequence_length, tf.reduce_max(self.sequence_length), dtype=tf.float32), -1)
+                tf.expand_dims(tf.sequence_mask(sequence_len, tf.reduce_max(sequence_len), dtype=tf.float32), -1)
             )
             
             X2_comp = tf.layers.dense(
@@ -122,7 +122,7 @@ class AttentionCnn(BaseSiameseNet):
             )
             self._X2_comp = tf.multiply(
                 tf.layers.dropout(X2_comp, rate=self.dropout, training=self.is_training),
-                tf.expand_dims(tf.sequence_mask(self.sequence_length, tf.reduce_max(self.sequence_length), dtype=tf.float32), -1)
+                tf.expand_dims(tf.sequence_mask(sequence_len, tf.reduce_max(sequence_len), dtype=tf.float32), -1)
             )
         
             X1_agg = tf.reduce_sum(self._X1_comp, 1)
