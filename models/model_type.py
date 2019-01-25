@@ -13,6 +13,7 @@ class ModelType(Enum):
 MODELS = {
     ModelType.cnn.name: CnnSiameseNet,
     ModelType.rnn.name: LSTMBasedSiameseNet,
-    ModelType.multihead.name: MultiheadAttentionSiameseNet
+    ModelType.multihead.name: MultiheadAttentionSiameseNet,
+    ModelType.bcann.name: AttentionCnn
 }
 
