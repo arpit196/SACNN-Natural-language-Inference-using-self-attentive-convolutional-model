@@ -12,6 +12,7 @@ class BaseSiameseNet:
         self.is_training = tf.placeholder(dtype=tf.bool)
         self.labels = tf.placeholder(dtype=tf.int32, shape=[None, 1])
         self.sentences_lengths = tf.placeholder(dtype=tf.int32, shape=[None])
+        self.dropout=0.2
 
         self.debug = None
 
