@@ -10,7 +10,7 @@ class ModelType(Enum):
     rnn = 1,
     cnn = 2,
     bcann = 3,
-    bcsann
+    bcsann = 4
 
 
 MODELS = {
