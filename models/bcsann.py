@@ -11,7 +11,7 @@ _conv_projection_size = 64
 _attention_output_size = 200
 _comparison_output_size = 120
 
-class AttentionCnn(BaseSiameseNet):
+class AttentionSCnn(BaseSiameseNet):
 
     def __init__(self, max_sequence_len, vocabulary_size, main_cfg, model_cfg):
         BaseSiameseNet.__init__(self, max_sequence_len, vocabulary_size, main_cfg, model_cfg, mse)
@@ -117,7 +117,7 @@ class AttentionCnn(BaseSiameseNet):
             
             e = tf.matmul(e_X1, e_X2, transpose_b=True, name='e')
             
-            self._beta2 = tf.matmul(self._masked_softmax(e, sequence_len), self._X2_conv, name='beta2')
+            self._alpha1 = tf.matmul(self._masked_softmax(e, sequence_len), self._X2_conv, name='beta2')
             
         with tf.name_scope('comparison_layer'):
             X1_comp = tf.layers.dense(
