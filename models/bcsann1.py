@@ -10,7 +10,7 @@ import numpy as np
 
 _conv_projection_size = 64
 _attention_output_size = 200
-_comparison_output_size = 120
+_comparison_output_size = 150
 
 class AttentionS2Cnn(BaseSiameseNet):
 
@@ -50,19 +50,11 @@ class AttentionS2Cnn(BaseSiameseNet):
             return (alpha,beta)
             
     def siamese_layer(self, sequence_len, model_cfg):
-        self.conc_X1,_=stacked_multihead_attention(self.embedded_x1,
-                                                       num_blocks=2,
-                                                       num_heads=8,
-                                                       use_residual=False,is_training=self.is_training)
-        self.conc_X2,_=stacked_multihead_attention(self.embedded_x1,
-                                                       num_blocks=2,
-                                                       num_heads=8,
-                                                       use_residual=False,is_training=self.is_training,reuse=True)
         _conv_filter_size = 3
         #parse_list(model_cfg['PARAMS']['filter_sizes'])
         with tf.name_scope('convolutional_layer'):
             X1_conv_1 = tf.layers.conv1d(
-                self._conv_pad(self.conc_X1),
+                self._conv_pad(self.embedded_x1),
                 _conv_projection_size,
                 _conv_filter_size,
                 padding='valid',
@@ -71,7 +63,7 @@ class AttentionS2Cnn(BaseSiameseNet):
             )
             
             X2_conv_1 = tf.layers.conv1d(
-                self._conv_pad(self.conc_X2),
+                self._conv_pad(self.embedded_x2),
                 _conv_projection_size,
                 _conv_filter_size,
                 padding='valid',
@@ -105,6 +97,19 @@ class AttentionS2Cnn(BaseSiameseNet):
             self._X1_conv = tf.layers.dropout(X1_conv_2, rate=self.dropout, training=self.is_training)
             self._X2_conv = tf.layers.dropout(X2_conv_2, rate=self.dropout, training=self.is_training)
             
+            self.beta1,_=stacked_multihead_attention(self.embedded_x1,
+                                                       num_blocks=num_blocks,
+                                                       num_heads=num_heads,
+                                                       use_residual=use_residual,
+                                                       is_training=self.is_training)
+            self.alpha1,_ =stacked_multihead_attention(self.embedded_x1,
+                                                       num_blocks=num_blocks,
+                                                       num_heads=num_heads,
+                                                       use_residual=use_residual,
+                                                       is_training=self.is_training)
+
+
+            
         with tf.name_scope('attention_layer'):
             e_X1 = tf.layers.dense(self._X1_conv, _attention_output_size, activation=tf.nn.relu, name='attention_nn')
             
@@ -115,6 +120,7 @@ class AttentionS2Cnn(BaseSiameseNet):
             self._beta = tf.matmul(self._masked_softmax(e, sequence_len), self._X2_conv, name='beta2')
             self._alpha = tf.matmul(self._masked_softmax(tf.transpose(e, [0,2,1]), sequence_len), self._X1_conv, name='alpha2')
             
+        '''
         with tf.name_scope('self_attention1'):
             e_X1 = tf.layers.dense(self._X1_conv, _attention_output_size, activation=tf.nn.relu, name='attention_nn1')
             
@@ -132,6 +138,7 @@ class AttentionS2Cnn(BaseSiameseNet):
             e = tf.matmul(e_X1, e_X2, transpose_b=True, name='e')
             
             self._alpha1 = tf.matmul(self._masked_softmax(e, sequence_len), self._X2_conv, name='beta2')
+          '''
             
         with tf.name_scope('comparison_layer'):
             X1_comp = tf.layers.dense(
