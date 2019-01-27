@@ -4,6 +4,7 @@ from models.lstm import LSTMBasedSiameseNet
 from models.multihead_attention import MultiheadAttentionSiameseNet
 from models.bcann import AttentionCnn
 from models.bcsann import AttentionSCnn
+from models.bcsann1 import AttentionS2Cnn
 
 class ModelType(Enum):
     multihead = 0,
