@@ -56,15 +56,15 @@ class AttentionS2Cnn(BaseSiameseNet):
             #outputs2, state2 = tf.nn.dynamic_rnn(self.rnn_cell,self.embedded_x2,initial_state=None,dtype=tf.float32,time_major=False)
             #print(state1)
             #(att1,att2)=self.attention_layer0(state1,state2,sequence_len,sequence_len)
-            (att1,att2)=self.attention_layer0(self._X1_embedded,self._X2_embedded,401,294) # transoformer
+            (att1,att2)=self.attention_layer0(self.embedded_x1,self.embedded_x2,sequence_len,sequence_len) # transoformer
             att1=tf.cast(att1,tf.float32)
             att2=tf.cast(att2,tf.float32)
             #sent11elmo=tf.cast(sent1elmo,tf.float32)
             #sent12elmo=tf.cast(sent2elmo,tf.float32)
             #print(att1)
             #print(sent1elmo)
-            conc1 = tf.concat([att2,self._X1_embedded],2)
-            conc2 = tf.concat([att1,self._X2_embedded],2)
+            conc1 = tf.concat([att2,self.embedded_x1],2)
+            conc2 = tf.concat([att1,self.embedded_x2],2)
             #print(conc1)
             self.conc_X1=conc1
             self.conc_X2=conc2
