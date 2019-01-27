@@ -7,7 +7,7 @@ def feed_forward(x, num_hiddens, activation=None, reuse=False):
     return ff
 
 
-def linear(x, num_hiddens=None, reuse=True):
+def linear(x, num_hiddens=None, reuse=False):
     if num_hiddens is None:
         num_hiddens = x.get_shape().as_list()[-1]
     with tf.variable_scope('linear',reuse=reuse):
