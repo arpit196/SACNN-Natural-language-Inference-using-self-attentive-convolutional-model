@@ -49,26 +49,14 @@ class AttentionS2Cnn(BaseSiameseNet):
             return (alpha,beta)
             
     def siamese_layer(self, sequence_len, model_cfg):
-        with tf.name_scope('prelayer'):
-            #sent1elmo=ElmoEmbeddingLayer()(self.X1)
-            #sent2elmo=ElmoEmbeddingLayer()(self.X2)
-            #outputs1, state1 = tf.nn.dynamic_rnn(self.rnn_cell,self.embedded_x1,initial_state=None,dtype=tf.float32,time_major=False)
-            #outputs2, state2 = tf.nn.dynamic_rnn(self.rnn_cell,self.embedded_x2,initial_state=None,dtype=tf.float32,time_major=False)
-            #print(state1)
-            #(att1,att2)=self.attention_layer0(state1,state2,sequence_len,sequence_len)
-            (att1,att2)=self.attention_layer0(self.embedded_x1,self.embedded_x2,sequence_len,sequence_len) # transoformer
-            att1=tf.cast(att1,tf.float32)
-            att2=tf.cast(att2,tf.float32)
-            #sent11elmo=tf.cast(sent1elmo,tf.float32)
-            #sent12elmo=tf.cast(sent2elmo,tf.float32)
-            #print(att1)
-            #print(sent1elmo)
-            conc1 = tf.concat([att2,self.embedded_x1],2)
-            conc2 = tf.concat([att1,self.embedded_x2],2)
-            #print(conc1)
-            self.conc_X1=conc1
-            self.conc_X2=conc2
-            
+        self.conc_X1,_=stacked_multihead_attention(self.embedded_x1,
+                                                       num_blocks=2,
+                                                       num_heads=3,
+                                                       use_residual=use_residual,is_training=self.is_training)
+        self.conc_X2,_=stacked_multihead_attention(self.embedded_x1,
+                                                       num_blocks=2,
+                                                       num_heads=3,
+                                                       use_residual=use_residual,is_training=self.is_training)
         _conv_filter_size = 3
         #parse_list(model_cfg['PARAMS']['filter_sizes'])
         with tf.name_scope('convolutional_layer'):
