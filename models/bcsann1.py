@@ -7,7 +7,7 @@ from layers.basics import dropout
 import tensorflow as tf
 import numpy as np
 
-_conv_projection_size = 64
+_conv_projection_size = 128
 _attention_output_size = 200
 _comparison_output_size = 120
 
@@ -32,24 +32,48 @@ class AttentionSCnn(BaseSiameseNet):
             return tf.concat([pad, values, pad], axis=1)
         
 
-    def _attention_layer(self):
+    def attention_layer0(self,sent1,sent2,sent1_len,sent2_len):
         with tf.name_scope('attention_layer'):
-            e_X1 = tf.layers.dense(self._X1_conv, _attention_output_size, activation=tf.nn.relu, name='attention_nn')
-            e_X2=tf.layers.dense(self._X2_conv, _attention_output_size, activation=tf.nn.relu,
-                                 name='attention_nn',reuse=True)
-            
-            e = tf.matmul(e_X1, e_X2, transpose_b=True, name='e')
-            
-            self._beta = tf.matmul(self._masked_softmax(e, sequence_len), self._X2_conv, name='beta2')
-            self._alpha = tf.matmul(self._masked_softmax(tf.transpose(e, [0,2,1]), sequence_len), self._X1_conv, name='alpha2')
+            #e_X1 = tf.layers.dense(sent1, attention_output_size, activation=tf.nn.relu, name='attention_nn')
+            #e_X2 = tf.layers.dense(sent2, attention_output_size, activation=tf.nn.relu, name='attention_nn', reuse=True)
+            W=tf.get_variable("W11", shape=(32,64,64), initializer=tf.random_normal_initializer(),dtype=tf.float32)
+            print(W)
+            h=tf.matmul(sent1,W)
+            print(h)
+            e = tf.matmul(h, sent2, transpose_b=True, name='e1')
+            print(e)
+            beta = tf.matmul(self._masked_softmax(e, sent2_len), sent2, name='beta1')
+            print(beta)
+            alpha = tf.matmul(self._masked_softmax(tf.transpose(e, [0,2,1]), sent1_len), sent1, name='alpha1')
+            print(alpha)
+            return (alpha,beta)
             
     def siamese_layer(self, sequence_len, model_cfg):
-        
+        with tf.name_scope('prelayer'):
+            #sent1elmo=ElmoEmbeddingLayer()(self.X1)
+            #sent2elmo=ElmoEmbeddingLayer()(self.X2)
+            outputs1, state1 = tf.nn.dynamic_rnn(self.rnn_cell,self.embedded_x1,initial_state=None,dtype=tf.float32,time_major=False)
+            outputs2, state2 = tf.nn.dynamic_rnn(self.rnn_cell,self.embedded_x2,initial_state=None,dtype=tf.float32,time_major=False)
+            #print(state1)
+            (att1,att2)=self.attention_layer0(state1,state2,sequence_len,sequence_len)
+            #(att1,att2)=self.attention_layer0(self._X1_embedded,self._X2_embedded,401,294) # transoformer
+            att1=tf.cast(att1,tf.float32)
+            att2=tf.cast(att2,tf.float32)
+            #sent11elmo=tf.cast(sent1elmo,tf.float32)
+            #sent12elmo=tf.cast(sent2elmo,tf.float32)
+            #print(att1)
+            #print(sent1elmo)
+            conc1 = tf.concat([att2,state1],2)
+            conc2 = tf.concat([att1,state2],2)
+            #print(conc1)
+            self.conc_X1=conc1
+            self.conc_X2=conc2
+            
         _conv_filter_size = 3
         #parse_list(model_cfg['PARAMS']['filter_sizes'])
         with tf.name_scope('convolutional_layer'):
             X1_conv_1 = tf.layers.conv1d(
-                self._conv_pad(self.embedded_x1),
+                self._conv_pad(self.conc_X1),
                 _conv_projection_size,
                 _conv_filter_size,
                 padding='valid',
@@ -58,7 +82,7 @@ class AttentionSCnn(BaseSiameseNet):
             )
             
             X2_conv_1 = tf.layers.conv1d(
-                self._conv_pad(self.embedded_x2),
+                self._conv_pad(self.conc_X2),
                 _conv_projection_size,
                 _conv_filter_size,
                 padding='valid',
