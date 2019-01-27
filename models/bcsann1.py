@@ -53,11 +53,11 @@ class AttentionS2Cnn(BaseSiameseNet):
         self.conc_X1,_=stacked_multihead_attention(self.embedded_x1,
                                                        num_blocks=2,
                                                        num_heads=3,
-                                                       use_residual=use_residual,is_training=self.is_training)
+                                                       use_residual=False,is_training=self.is_training)
         self.conc_X2,_=stacked_multihead_attention(self.embedded_x1,
                                                        num_blocks=2,
                                                        num_heads=3,
-                                                       use_residual=use_residual,is_training=self.is_training)
+                                                       use_residual=False,is_training=self.is_training)
         _conv_filter_size = 3
         #parse_list(model_cfg['PARAMS']['filter_sizes'])
         with tf.name_scope('convolutional_layer'):
