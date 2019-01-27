@@ -7,11 +7,11 @@ def feed_forward(x, num_hiddens, activation=None, reuse=False):
     return ff
 
 
-def linear(x, num_hiddens=None, reuse=False):
+def linear(x, num_hiddens=None, reuse=True):
     if num_hiddens is None:
         num_hiddens = x.get_shape().as_list()[-1]
-    # with tf.variable_scope('linear'):
-    linear_layer = tf.layers.dense(x, num_hiddens)
+    with tf.variable_scope('linear',reuse=reuse):
+        linear_layer = tf.layers.dense(x, num_hiddens)
     return linear_layer
 
 
