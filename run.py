@@ -107,7 +107,16 @@ def train(main_config, model_config, model_name, dataset_name):
             time_per_epoch.append(total_time)
 
             model_saver.save(session, global_step=global_step)
+            
+        feed_dict_test = {model.x1: test_sentence1,
+                                     model.x2: test_sentence2,
+                                     model.is_training: False,
+                                     model.labels: test_labels}
 
+        test_accuracy, test_summary = session.run([model.accuracy, model.summary_op],
+                                                            feed_dict=feed_dict_test)
+        print('tst_acc:%.2f loss:%.2f',test_accuracy,loss)
+        
         model_evaluator.evaluate_test(test_sentence1, test_sentence2, test_labels)
         model_evaluator.save_evaluation('{}/{}'.format(main_cfg.model_dir, model_name), time_per_epoch[-1], dataset)
 
