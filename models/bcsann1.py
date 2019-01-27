@@ -100,12 +100,12 @@ class AttentionS2Cnn(BaseSiameseNet):
             self.beta1,_=stacked_multihead_attention(self.embedded_x1,
                                                        num_blocks=1,
                                                        num_heads=4,
-                                                       use_residual=use_residual,
+                                                       use_residual=False,
                                                        is_training=self.is_training)
             self.alpha1,_ =stacked_multihead_attention(self.embedded_x1,
                                                        num_blocks=1,
                                                        num_heads=4,
-                                                       use_residual=use_residual,
+                                                       use_residual=False,
                                                        is_training=self.is_training)
 
 
