@@ -97,12 +97,12 @@ class AttentionS2Cnn(BaseSiameseNet):
             self._X1_conv = tf.layers.dropout(X1_conv_2, rate=self.dropout, training=self.is_training)
             self._X2_conv = tf.layers.dropout(X2_conv_2, rate=self.dropout, training=self.is_training)
             
-            self.beta1,_=stacked_multihead_attention(self.embedded_x1,
+            self._beta1,_=stacked_multihead_attention(self.embedded_x1,
                                                        num_blocks=1,
                                                        num_heads=4,
                                                        use_residual=False,
                                                        is_training=self.is_training)
-            self.alpha1,_ =stacked_multihead_attention(self.embedded_x1,
+            self._alpha1,_ =stacked_multihead_attention(self.embedded_x1,
                                                        num_blocks=1,
                                                        num_heads=4,
                                                        use_residual=False,
