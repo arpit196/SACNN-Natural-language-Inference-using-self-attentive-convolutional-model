@@ -1,6 +1,7 @@
 from layers.convolution import cnn_layers
 from layers.losses import mse
 from layers.similarity import manhattan_similarity
+from layers.attention import stacked_multihead_attention
 from models.base_model import BaseSiameseNet
 from utils.config_helpers import parse_list
 from layers.basics import dropout
