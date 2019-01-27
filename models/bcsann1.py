@@ -36,7 +36,7 @@ class AttentionS2Cnn(BaseSiameseNet):
         with tf.name_scope('attention_layer'):
             #e_X1 = tf.layers.dense(sent1, attention_output_size, activation=tf.nn.relu, name='attention_nn')
             #e_X2 = tf.layers.dense(sent2, attention_output_size, activation=tf.nn.relu, name='attention_nn', reuse=True)
-            W=tf.get_variable("W11", shape=(tt.shape(self.x1)[0],64,64), initializer=tf.random_normal_initializer(),dtype=tf.float32)
+            W=tf.get_variable("W11", shape=(tf.shape(self.x1)[0],64,64), initializer=tf.random_normal_initializer(),dtype=tf.float32)
             print(W)
             h=tf.matmul(sent1,W)
             print(h)
