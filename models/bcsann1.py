@@ -52,11 +52,11 @@ class AttentionS2Cnn(BaseSiameseNet):
     def siamese_layer(self, sequence_len, model_cfg):
         self.conc_X1,_=stacked_multihead_attention(self.embedded_x1,
                                                        num_blocks=2,
-                                                       num_heads=3,
+                                                       num_heads=8,
                                                        use_residual=False,is_training=self.is_training)
         self.conc_X2,_=stacked_multihead_attention(self.embedded_x1,
                                                        num_blocks=2,
-                                                       num_heads=3,
+                                                       num_heads=8,
                                                        use_residual=False,is_training=self.is_training)
         _conv_filter_size = 3
         #parse_list(model_cfg['PARAMS']['filter_sizes'])
