@@ -36,7 +36,7 @@ class AttentionS2Cnn(BaseSiameseNet):
         with tf.name_scope('attention_layer'):
             #e_X1 = tf.layers.dense(sent1, attention_output_size, activation=tf.nn.relu, name='attention_nn')
             #e_X2 = tf.layers.dense(sent2, attention_output_size, activation=tf.nn.relu, name='attention_nn', reuse=True)
-            W=tf.get_variable("W11", shape=(32,64,64), initializer=tf.random_normal_initializer(),dtype=tf.float32)
+            W=tf.get_variable("W11", shape=(tt.shape(self.x1)[0],64,64), initializer=tf.random_normal_initializer(),dtype=tf.float32)
             print(W)
             h=tf.matmul(sent1,W)
             print(h)
@@ -52,19 +52,19 @@ class AttentionS2Cnn(BaseSiameseNet):
         with tf.name_scope('prelayer'):
             #sent1elmo=ElmoEmbeddingLayer()(self.X1)
             #sent2elmo=ElmoEmbeddingLayer()(self.X2)
-            outputs1, state1 = tf.nn.dynamic_rnn(self.rnn_cell,self.embedded_x1,initial_state=None,dtype=tf.float32,time_major=False)
-            outputs2, state2 = tf.nn.dynamic_rnn(self.rnn_cell,self.embedded_x2,initial_state=None,dtype=tf.float32,time_major=False)
+            #outputs1, state1 = tf.nn.dynamic_rnn(self.rnn_cell,self.embedded_x1,initial_state=None,dtype=tf.float32,time_major=False)
+            #outputs2, state2 = tf.nn.dynamic_rnn(self.rnn_cell,self.embedded_x2,initial_state=None,dtype=tf.float32,time_major=False)
             #print(state1)
-            (att1,att2)=self.attention_layer0(state1,state2,sequence_len,sequence_len)
-            #(att1,att2)=self.attention_layer0(self._X1_embedded,self._X2_embedded,401,294) # transoformer
+            #(att1,att2)=self.attention_layer0(state1,state2,sequence_len,sequence_len)
+            (att1,att2)=self.attention_layer0(self._X1_embedded,self._X2_embedded,401,294) # transoformer
             att1=tf.cast(att1,tf.float32)
             att2=tf.cast(att2,tf.float32)
             #sent11elmo=tf.cast(sent1elmo,tf.float32)
             #sent12elmo=tf.cast(sent2elmo,tf.float32)
             #print(att1)
             #print(sent1elmo)
-            conc1 = tf.concat([att2,state1],2)
-            conc2 = tf.concat([att1,state2],2)
+            conc1 = tf.concat([att2,self._X1_embedded],2)
+            conc2 = tf.concat([att1,self._X2_embedded],2)
             #print(conc1)
             self.conc_X1=conc1
             self.conc_X2=conc2
