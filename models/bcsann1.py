@@ -106,7 +106,7 @@ class AttentionS2Cnn(BaseSiameseNet):
                                                        num_blocks=1,
                                                        num_heads=4,
                                                        use_residual=False,
-                                                       is_training=self.is_training)
+                                                       is_training=self.is_training,reuse=True)
 
 
             
