@@ -3,7 +3,7 @@ import tensorflow as tf
 from layers.basics import linear, dropout, feed_forward, residual
 
 
-def stacked_multihead_attention(x, num_blocks, num_heads, use_residual, is_training, reuse=False):
+def stacked_multihead_attention(x, num_blocks, num_heads, use_residual, is_training, reuse=True):
     num_hiddens = x.get_shape().as_list()[-1]
     with tf.variable_scope('stacked_multihead_attention', reuse=reuse):
         for i in range(num_blocks):
