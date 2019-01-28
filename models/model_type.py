@@ -5,14 +5,16 @@ from models.multihead_attention import MultiheadAttentionSiameseNet
 from models.bcann import AttentionCnn
 from models.bcsann import AttentionSCnn
 from models.bcsann1 import AttentionS2Cnn
+from models.twolayerbcnn import Attention2lyrCnn
 
 class ModelType(Enum):
     multihead = 0,
     rnn = 1,
     cnn = 2,
     bcann = 3,
-    bcsann = 4.
-    bcsann1 = 5
+    bcsann = 4,
+    bcsann1 = 5,
+    twolayerbcnn=6
 
 
 MODELS = {
@@ -21,6 +23,7 @@ MODELS = {
     ModelType.multihead.name: MultiheadAttentionSiameseNet,
     ModelType.bcann.name: AttentionCnn,
     ModelType.bcsann.name:AttentionSCnn,
-    ModelType.bcsann1.name:AttentionS2Cnn
+    ModelType.bcsann1.name:AttentionS2Cnn,
+    ModelType.twolayerbcnn.name:Attention2lyrCnn
 }
 
