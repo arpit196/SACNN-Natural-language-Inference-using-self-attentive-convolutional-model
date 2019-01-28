@@ -103,7 +103,7 @@ class Attention2lyrCnn(BaseSiameseNet):
                 _conv_filter_size,
                 padding='valid',
                 use_bias=False,
-                name='conv_1',
+                name='conv_12',
             )
             
             X2_conv_12 = tf.layers.conv1d(
@@ -112,7 +112,7 @@ class Attention2lyrCnn(BaseSiameseNet):
                 _conv_filter_size,
                 padding='valid',
                 use_bias=False,
-                name='conv_1',
+                name='conv_12',
                 reuse=True
             )
             
@@ -125,7 +125,7 @@ class Attention2lyrCnn(BaseSiameseNet):
                 _conv_filter_size,
                 padding='valid',
                 use_bias=False,
-                name='conv_2',
+                name='conv_22',
             )
             
             X2_conv_22 = tf.layers.conv1d(
@@ -134,7 +134,7 @@ class Attention2lyrCnn(BaseSiameseNet):
                 _conv_filter_size,
                 padding='valid',
                 use_bias=False,
-                name='conv_2',
+                name='conv_22',
                 reuse=True
             )
             
