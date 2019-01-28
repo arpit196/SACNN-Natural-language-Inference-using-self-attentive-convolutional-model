@@ -173,28 +173,28 @@ class SICKDataset(DatasetExperiment):
         return self.train
 
     def train_set_pairs(self):
-        return self.train[[ColumnType.sentence_A.name, ColumnType.sentence_B.name]].as_matrix()
+        return self.train[[sentence_A.name, sentence_B.name]].as_matrix()
 
     def train_labels(self):
-        return self.train[ColumnType.entailment_label.name].as_matrix()
+        return self.train[entailment_label.name].as_matrix()
 
     def dev_set(self):
         return self.dev
 
     def dev_set_pairs(self):
-        return self.dev[[ColumnType.sentence_A.name, ColumnType.sentence_B.name]].as_matrix()
+        return self.dev[[sentence_A.name, sentence_B.name]].as_matrix()
 
     def dev_labels(self):
-        return self.dev[ColumnType.entailment_label.name].as_matrix()
+        return self.dev[entailment_label.name].as_matrix()
 
     def test_set(self):
         return self.test
 
     def test_set_pairs(self):
-        return self.test[[ColumnType.sentence_A.name, ColumnType.sentence_B.name]].as_matrix()
+        return self.test[[sentence_A.name, sentence_B.name]].as_matrix()
 
     def test_labels(self):
-        return self.test[ColumnType.entailment_label.name].as_matrix()
+        return self.test[entailment_label.name].as_matrix()
 
     def _data_path(self):
         return 'corpora/SICK/'
