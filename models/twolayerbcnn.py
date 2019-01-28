@@ -188,7 +188,7 @@ class Attention2lyrCnn(BaseSiameseNet):
             
             self._alpha1 = tf.matmul(self._masked_softmax(e, sequence_len), self._X2_conv, name='betaslf3')
             
-       with tf.name_scope('self_attention2_conv2'):
+        with tf.name_scope('self_attention2_conv2'):
             e_X1 = tf.layers.dense(self._X2_conv2, _attention_output_size, activation=tf.nn.relu, name='attention_nn4')
             
             e_X2 = tf.layers.dense(self._X2_conv2, _attention_output_size, activation=tf.nn.relu, name='attention_nn4', reuse=True)
