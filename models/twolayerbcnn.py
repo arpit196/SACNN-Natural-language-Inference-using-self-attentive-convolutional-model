@@ -214,7 +214,7 @@ class Attention2lyrCnn(BaseSiameseNet):
                 tf.concat([self._X1_conv2, self._beta_lr2, self._beta1_lr2], 2),
                 _comparison_output_size,
                 activation=tf.nn.relu,
-                name='comparison_nn'
+                name='comparison_nn_lr2'
             )
             self._X1_complr2 = tf.multiply(
                 tf.layers.dropout(X1_complr2, rate=self.dropout, training=self.is_training),
@@ -237,7 +237,7 @@ class Attention2lyrCnn(BaseSiameseNet):
                 tf.concat([self._X2_conv2, self._alpha_lr2,self._alpha1_lr2], 2),
                 _comparison_output_size,
                 activation=tf.nn.relu,
-                name='comparison_nn',
+                name='comparison_nn_lr2',
                 reuse=True
             )
             self._X2_complr2 = tf.multiply(
