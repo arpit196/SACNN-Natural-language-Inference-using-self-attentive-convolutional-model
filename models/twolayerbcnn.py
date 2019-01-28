@@ -119,27 +119,8 @@ class Attention2lyrCnn(BaseSiameseNet):
             X1_conv_12 = tf.layers.dropout(X1_conv_12, rate=self.dropout, training=self.is_training)
             X2_conv_12 = tf.layers.dropout(X2_conv_12, rate=self.dropout, training=self.is_training)
             
-            X1_conv_22 = tf.layers.conv1d(
-                self._conv_pad(X1_conv_12),
-                _conv_projection_size,
-                _conv_filter_size,
-                padding='valid',
-                use_bias=False,
-                name='conv_22',
-            )
-            
-            X2_conv_22 = tf.layers.conv1d(
-                self._conv_pad(X2_conv_12),
-                _conv_projection_size,
-                _conv_filter_size,
-                padding='valid',
-                use_bias=False,
-                name='conv_22',
-                reuse=True
-            )
-            
-            self._X1_conv2 = tf.layers.dropout(X1_conv_22, rate=self.dropout, training=self.is_training)
-            self._X2_conv2 = tf.layers.dropout(X2_conv_22, rate=self.dropout, training=self.is_training)
+            self._X1_conv2 = tf.layers.dropout(X1_conv_12, rate=self.dropout, training=self.is_training)
+            self._X2_conv2 = tf.layers.dropout(X2_conv_12, rate=self.dropout, training=self.is_training)
             
         with tf.name_scope('attention_layer'):
             e_X1 = tf.layers.dense(self._X1_conv, _attention_output_size, activation=tf.nn.relu, name='attention_nn')
