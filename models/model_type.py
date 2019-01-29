@@ -26,7 +26,7 @@ MODELS = {
     ModelType.bcann.name: AttentionCnn,
     ModelType.bcsann.name:AttentionSCnn,
     ModelType.bcsann1.name:AttentionS2Cnn,
-    ModelType.twolayerbcnn.name:Attention2lyrCnn
+    ModelType.twolayerbcnn.name:Attention2lyrCnn,
     ModelType.bcmultihead.name:AttentionMCnn
 }
 
