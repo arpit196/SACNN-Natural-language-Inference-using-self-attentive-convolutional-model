@@ -2,6 +2,7 @@ from layers.convolution import cnn_layers
 from layers.losses import mse
 from layers.similarity import manhattan_similarity
 from models.base_model import BaseSiameseNet
+from layers.recurrent import rnn_layer
 from utils.config_helpers import parse_list
 from layers.basics import dropout
 import tensorflow as tf
