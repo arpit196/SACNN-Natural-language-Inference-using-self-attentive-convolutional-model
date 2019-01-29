@@ -142,18 +142,26 @@ class AttentionSCnn(BaseSiameseNet):
                 tf.layers.dropout(X2_comp, rate=self.dropout, training=self.is_training),
                 tf.expand_dims(tf.sequence_mask(sequence_len, tf.reduce_max(sequence_len), dtype=tf.float32), -1)
             )
-        
+            outputs_sen1 = rnn_layer(self.embedded_x1, hidden_size, cell_type)
+            outputs_sen2 = rnn_layer(self.embedded_x2, hidden_size, cell_type, reuse=True)
+
+            out1 = tf.reduce_mean(outputs_sen1, axis=1)
+            out2 = tf.reduce_mean(outputs_sen2, axis=1)
+            
             X1_agg = tf.reduce_sum(self._X1_comp, 1)
             X2_agg = tf.reduce_sum(self._X2_comp, 1)
             
-            self._agg = tf.concat([X1_agg, X2_agg], 1)
-        
-        #return manhattan_similarity(X1_agg,X2_agg)
-        
+            
+            self._agg1 = tf.concat([X1_agg, out1], 1)
+            self._agg2 = tf.concat([X2_agg, out2], 1)
+            
+        return manhattan_similarity(self._agg1,self._agg2)
+        '''
         with tf.name_scope('classifier'):
             L1 = tf.layers.dropout(
                 tf.layers.dense(self._agg, 100, activation=tf.nn.relu, name='L1'),
                 rate=self.dropout, training=self.is_training)
             y = tf.layers.dense(L1, 1, activation=tf.nn.softmax, name='y')
         return y
+        '''
         
