@@ -142,8 +142,8 @@ class AttentionSCnn(BaseSiameseNet):
                 tf.layers.dropout(X2_comp, rate=self.dropout, training=self.is_training),
                 tf.expand_dims(tf.sequence_mask(sequence_len, tf.reduce_max(sequence_len), dtype=tf.float32), -1)
             )
-            outputs_sen1 = rnn_layer(self.embedded_x1, hidden_size, cell_type)
-            outputs_sen2 = rnn_layer(self.embedded_x2, hidden_size, cell_type, reuse=True)
+            outputs_sen1 = rnn_layer(self.embedded_x1, 128, GRU)
+            outputs_sen2 = rnn_layer(self.embedded_x2, 128, GRU, reuse=True)
 
             out1 = tf.reduce_mean(outputs_sen1, axis=1)
             out2 = tf.reduce_mean(outputs_sen2, axis=1)
