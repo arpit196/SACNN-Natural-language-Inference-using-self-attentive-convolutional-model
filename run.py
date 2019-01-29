@@ -4,7 +4,7 @@ from argparse import ArgumentParser
 import tensorflow as tf
 from tqdm import tqdm
 
-from data.dataset import Dataset, DATASETS
+from data.dataset import Dataset1, DATASETS
 from models.model_type import MODELS
 from utils.batch_helper import BatchHelper
 from utils.config_helpers import MainConfig
