@@ -154,5 +154,6 @@ class AttentionSCnn(BaseSiameseNet):
             L1 = tf.layers.dropout(
                 tf.layers.dense(self._agg, 100, activation=tf.nn.relu, name='L1'),
                 rate=self.dropout, training=self.is_training)
-        return L1
+            y = tf.layers.dense(L1, self._target_classes, activation=tf.nn.softmax, name='y')
+        return y
         
