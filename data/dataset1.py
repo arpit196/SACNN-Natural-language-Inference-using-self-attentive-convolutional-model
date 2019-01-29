@@ -199,7 +199,7 @@ class SICKDataset(DatasetExperiment):
         return self.test[entailment_label.name].as_matrix()
 
     def _data_path(self):
-        return 'corpora/SICK/'
+        return 'data/'
 
 DATASETS = {
     DatasetType.QQP.name: QQPDataset,
