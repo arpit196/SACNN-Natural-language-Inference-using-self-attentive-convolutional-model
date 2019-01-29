@@ -11,7 +11,7 @@ _conv_projection_size = 64
 _attention_output_size = 200
 _comparison_output_size = 120
 
-class AttentionSCnn(BaseSiameseNet):
+class AttentionMCnn(BaseSiameseNet):
 
     def __init__(self, max_sequence_len, vocabulary_size, main_cfg, model_cfg):
         BaseSiameseNet.__init__(self, max_sequence_len, vocabulary_size, main_cfg, model_cfg, mse)
@@ -46,6 +46,18 @@ class AttentionSCnn(BaseSiameseNet):
     def siamese_layer(self, sequence_len, model_cfg):
         _conv_filter_size = 3
         #parse_list(model_cfg['PARAMS']['filter_sizes'])
+        out1, self.debug = stacked_multihead_attention(self.embedded_x1,
+                                                       num_blocks=2,
+                                                       num_heads=8,
+                                                       use_residual=False,
+                                                       is_training=self.is_training)
+
+        out2, _ = stacked_multihead_attention(self.embedded_x2,
+                                              num_blocks=2,
+                                              num_heads=8,
+                                              use_residual=False,
+                                              is_training=self.is_training,reuse=True)
+        
         with tf.name_scope('convolutional_layer'):
             X1_conv_1 = tf.layers.conv1d(
                 self._conv_pad(self.embedded_x1),
@@ -144,8 +156,9 @@ class AttentionSCnn(BaseSiameseNet):
             )
         
             X1_agg = tf.reduce_sum(self._X1_comp, 1)
+            X1_agg = tf.concat([X1_agg,out1],1)
             X2_agg = tf.reduce_sum(self._X2_comp, 1)
-            
+            X2_agg = tf.concat([X2_agg,out2],1)
             self._agg = tf.concat([X1_agg, X2_agg], 1)
         
         return manhattan_similarity(X1_agg,X2_agg)
