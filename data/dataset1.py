@@ -158,7 +158,7 @@ class SICKDataset(DatasetExperiment):
     def __init__(self, *args):
         super().__init__(*args)
         dataset = pd.read_csv('{}{}'.format(self.data_dir, 'SICK.txt'),
-                              delimiter='\t', header=None, names=[ind,sentence_A,sentence_B,entailment_label], na_values='')
+                              delimiter='\t', header=None, names=['ind','sentence_A','sentence_B','entailment_label'], na_values='')
         dataset['entailment_label']=df.entailment_label.astype("category").cat.codes
         dataset.drop(columns='ind')
         dataset.dropna(inplace=True)
