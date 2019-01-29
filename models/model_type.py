@@ -6,7 +6,7 @@ from models.bcann import AttentionCnn
 from models.bcsann import AttentionSCnn
 from models.bcsann1 import AttentionS2Cnn
 from models.twolayerbcnn import Attention2lyrCnn
-from models.twolayerbcnn import AttentionMCnn
+from models.bcmultihead import AttentionMCnn
 
 class ModelType(Enum):
     multihead = 0,
