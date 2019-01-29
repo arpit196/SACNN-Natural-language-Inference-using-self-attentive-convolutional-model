@@ -148,12 +148,11 @@ class AttentionSCnn(BaseSiameseNet):
             
             self._agg = tf.concat([X1_agg, X2_agg], 1)
         
-        return manhattan_similarity(X1_agg,X2_agg)
-        '''
+        #return manhattan_similarity(X1_agg,X2_agg)
+        
         with tf.name_scope('classifier'):
             L1 = tf.layers.dropout(
                 tf.layers.dense(self._agg, 100, activation=tf.nn.relu, name='L1'),
                 rate=self.dropout, training=self.is_training)
-            y = tf.layers.dense(L1, 1, activation=tf.nn.softmax, name='y')
-        return y
-        '''
+        return L1
+        
