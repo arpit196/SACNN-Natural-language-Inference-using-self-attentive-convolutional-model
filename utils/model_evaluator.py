@@ -11,7 +11,7 @@ class ModelEvaluator:
         self.dev_accuracies = []
         self.test_accuracies = []
 
-    def _evaluate(self, x1, x2, labels, batch_size=10):
+    def _evaluate(self, x1, x2, labels, batch_size=50):
         batch_helper = BatchHelper(x1, x2, labels, batch_size)
         num_batches = len(x1) // batch_size
         accuracy = 0.0
