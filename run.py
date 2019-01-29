@@ -162,7 +162,7 @@ def main():
                         help='model to be used')
 
     parser.add_argument('dataset',
-                        choices=['QQP', 'SNLI'],
+                        choices=['QQP', 'SNLI','SICK'],
                         help='dataset to be used')
 
     parser.add_argument('--gpu',
