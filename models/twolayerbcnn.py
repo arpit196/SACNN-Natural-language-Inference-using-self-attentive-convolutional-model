@@ -124,7 +124,7 @@ class Attention2lyrCnn(BaseSiameseNet):
             self._beta_lr2 = tf.matmul(self._masked_softmax(e, sequence_len), self._X2_conv2, name='betalr2')
             self._alpha_lr2 = tf.matmul(self._masked_softmax(tf.transpose(e, [0,2,1]), sequence_len), self._X1_conv2, name='alphalr2')
             
-        with tf.name_scope('self_attention1'):
+        with tf.name_scope('self_attention'):
             e_X1 = tf.layers.dense(self._X1_conv, _attention_output_size, activation=tf.nn.relu, name='attention_nn1')
             
             e_X2 = tf.layers.dense(self._X1_conv, _attention_output_size, activation=tf.nn.relu, name='attention_nn1', reuse=True)
@@ -133,6 +133,14 @@ class Attention2lyrCnn(BaseSiameseNet):
             
             self._beta1 = tf.matmul(self._masked_softmax(e, sequence_len), self._X1_conv, name='betaslf1') 
             
+            e_X1 = tf.layers.dense(self._X2_conv, _attention_output_size, activation=tf.nn.relu, name='attention_nn1',reuse=True)
+            
+            e_X2 = tf.layers.dense(self._X2_conv, _attention_output_size, activation=tf.nn.relu, name='attention_nn1', reuse=True)
+            
+            e = tf.matmul(e_X1, e_X2, transpose_b=True, name='e1')
+            
+            self._alpha1 = tf.matmul(self._masked_softmax(e, sequence_len), self._X2_conv, name='betaslf3')
+            
         with tf.name_scope('self_attention1_conv2'):
             e_X1 = tf.layers.dense(self._X1_conv2, _attention_output_size, activation=tf.nn.relu, name='attention_nn2')
             
@@ -140,21 +148,11 @@ class Attention2lyrCnn(BaseSiameseNet):
             
             e = tf.matmul(e_X1, e_X2, transpose_b=True, name='e')
             
-            self._beta1_lr2 = tf.matmul(self._masked_softmax(e, sequence_len), self._X1_conv2, name='betaslf2') 
+            self._beta1_lr2 = tf.matmul(self._masked_softmax(e, sequence_len), self._X1_conv2, name='betaslf2')
             
-        with tf.name_scope('self_attention2'):
-            e_X1 = tf.layers.dense(self._X2_conv, _attention_output_size, activation=tf.nn.relu, name='attention_nn3')
+            e_X1 = tf.layers.dense(self._X2_conv2, _attention_output_size, activation=tf.nn.relu, name='attention_nn2',reuse=True)
             
-            e_X2 = tf.layers.dense(self._X2_conv, _attention_output_size, activation=tf.nn.relu, name='attention_nn3', reuse=True)
-            
-            e = tf.matmul(e_X1, e_X2, transpose_b=True, name='e')
-            
-            self._alpha1 = tf.matmul(self._masked_softmax(e, sequence_len), self._X2_conv, name='betaslf3')
-            
-        with tf.name_scope('self_attention2_conv2'):
-            e_X1 = tf.layers.dense(self._X2_conv2, _attention_output_size, activation=tf.nn.relu, name='attention_nn4')
-            
-            e_X2 = tf.layers.dense(self._X2_conv2, _attention_output_size, activation=tf.nn.relu, name='attention_nn4', reuse=True)
+            e_X2 = tf.layers.dense(self._X2_conv2, _attention_output_size, activation=tf.nn.relu, name='attention_nn2', reuse=True)
             
             e = tf.matmul(e_X1, e_X2, transpose_b=True, name='e')
             
