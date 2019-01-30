@@ -104,13 +104,13 @@ class AttentionMCnn(BaseSiameseNet):
             
         self._beta1, self.debug = stacked_multihead_attention(self._X1_conv,
                                                        num_blocks=2,
-                                                       num_heads=1,
+                                                       num_heads=2,
                                                        use_residual=False,
                                                        is_training=self.is_training)
 
         self._alpha1, _ = stacked_multihead_attention(self._X2_conv,
                                               num_blocks=2,
-                                              num_heads=1,
+                                              num_heads=2,
                                               use_residual=False,
                                               is_training=self.is_training,reuse=True)
         ''' 
@@ -135,7 +135,7 @@ class AttentionMCnn(BaseSiameseNet):
             
         with tf.name_scope('comparison_layer'):
             X1_comp = tf.layers.dense(
-                tf.concat([self._X1_conv, self._beta, self._beta1], 2),
+                tf.concat([self._beta, self._beta1], 2),
                 _comparison_output_size,
                 activation=tf.nn.relu,
                 name='comparison_nn'
@@ -146,7 +146,7 @@ class AttentionMCnn(BaseSiameseNet):
             )
             
             X2_comp = tf.layers.dense(
-                tf.concat([self._X2_conv, self._alpha,self._alpha1], 2),
+                tf.concat([self._alpha,self._alpha1], 2),
                 _comparison_output_size,
                 activation=tf.nn.relu,
                 name='comparison_nn',
