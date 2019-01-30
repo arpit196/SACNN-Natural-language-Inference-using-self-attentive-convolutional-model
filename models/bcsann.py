@@ -9,7 +9,7 @@ import tensorflow as tf
 import numpy as np
 
 _conv_projection_size = 64
-_attention_output_size = 200
+_attention_output_size = 100
 _comparison_output_size = 120
 
 class AttentionSCnn(BaseSiameseNet):
