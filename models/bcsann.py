@@ -143,20 +143,20 @@ class AttentionSCnn(BaseSiameseNet):
                 tf.layers.dropout(X2_comp, rate=self.dropout, training=self.is_training),
                 tf.expand_dims(tf.sequence_mask(sequence_len, tf.reduce_max(sequence_len), dtype=tf.float32), -1)
             )
-            outputs_sen1 = rnn_layer(self.embedded_x1, hidden_size=128, cell_type='GRU', bidirectional=True)
-            outputs_sen2 = rnn_layer(self.embedded_x2, hidden_size=128, cell_type='GRU', bidirectional=True, reuse=True)
+            #outputs_sen1 = rnn_layer(self.embedded_x1, hidden_size=128, cell_type='GRU', bidirectional=True)
+            #outputs_sen2 = rnn_layer(self.embedded_x2, hidden_size=128, cell_type='GRU', bidirectional=True, reuse=True)
 
-            out1 = tf.reduce_mean(outputs_sen1, axis=1)
-            out2 = tf.reduce_mean(outputs_sen2, axis=1)
+            #out1 = tf.reduce_mean(outputs_sen1, axis=1)
+            #out2 = tf.reduce_mean(outputs_sen2, axis=1)
             
             X1_agg = tf.reduce_sum(self._X1_comp, 1)
             X2_agg = tf.reduce_sum(self._X2_comp, 1)
             
             
-            self._agg1 = tf.concat([X1_agg, out1], 1)
-            self._agg2 = tf.concat([X2_agg, out2], 1)
+            #self._agg1 = tf.concat([X1_agg, out1], 1)
+            #self._agg2 = tf.concat([X2_agg, out2], 1)
             
-        return manhattan_similarity(self._agg1,self._agg2)
+        return manhattan_similarity(self.X1_agg,self.X2_agg)
         '''
         with tf.name_scope('classifier'):
             L1 = tf.layers.dropout(
