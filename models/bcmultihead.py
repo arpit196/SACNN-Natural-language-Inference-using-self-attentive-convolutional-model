@@ -103,13 +103,13 @@ class AttentionMCnn(BaseSiameseNet):
             self._alpha = tf.matmul(self._masked_softmax(tf.transpose(e, [0,2,1]), sequence_len), self._X1_conv, name='alpha2')
             
         self._beta1, self.debug = stacked_multihead_attention(self._X1_conv,
-                                                       num_blocks=2,
+                                                       num_blocks=1,
                                                        num_heads=2,
                                                        use_residual=False,
                                                        is_training=self.is_training)
 
         self._alpha1, _ = stacked_multihead_attention(self._X2_conv,
-                                              num_blocks=2,
+                                              num_blocks=1,
                                               num_heads=2,
                                               use_residual=False,
                                               is_training=self.is_training,reuse=True)
