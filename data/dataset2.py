@@ -117,7 +117,7 @@ class SNLIDataset(DatasetExperiment):
         
         dataset_train.dropna(inplace=True)
         dataset_train = dataset_train.sample(frac=1, random_state=1).reset_index(drop=True)
-        dataset_train['gold_label']=dataset.gold_label.astype("category").cat.codes
+        dataset_train['gold_label']=dataset_train.gold_label.astype("category").cat.codes
         dataset_dev = pd.read_csv('{}{}'.format(self.data_dir, 'snli_1.0_dev.txt'),
                               delimiter='\t', header=None, names=columns, na_values='')
         
@@ -129,7 +129,7 @@ class SNLIDataset(DatasetExperiment):
         
         dataset_test.dropna(inplace=True)
         dataset_test = dataset_test.sample(frac=1, random_state=1).reset_index(drop=True)
-        dataset['gold_label']=dataset.gold_label.astype("category").cat.codes
+        dataset_test['gold_label']=dataset_test.gold_label.astype("category").cat.codes
         #num_instances = len(dataset)
         self.num_train = len(dataset_train)
         self.num_dev = len(dataset_dev)
