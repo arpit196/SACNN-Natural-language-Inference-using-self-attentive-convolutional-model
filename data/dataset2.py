@@ -123,7 +123,7 @@ class SNLIDataset(DatasetExperiment):
         
         dataset_dev.dropna(inplace=True)
         dataset_dev = dataset_dev.sample(frac=1, random_state=1).reset_index(drop=True)
-        dataset['gold_label']=dataset.gold_label.astype("category").cat.codes
+        dataset_dev['gold_label']=dataset_dev.gold_label.astype("category").cat.codes
         dataset_test = pd.read_csv('{}{}'.format(self.data_dir, 'snli_1.0_test.txt'),
                               delimiter='\t', header=None, names=columns, na_values='')
         
