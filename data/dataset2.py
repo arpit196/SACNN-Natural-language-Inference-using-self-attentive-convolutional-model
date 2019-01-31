@@ -163,7 +163,7 @@ class SNLIDataset(DatasetExperiment):
         return self.test[[ColumnType.sentence1.name, ColumnType.sentence2.name]].as_matrix()
 
     def test_labels(self):
-        return self.test[ColumnType.labels.name].as_matrix()
+        return self.test[ColumnType.gold_label.name].as_matrix()
 
     def _data_path(self):
         return '/content/gdrive/My Drive/'
