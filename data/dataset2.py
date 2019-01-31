@@ -14,7 +14,7 @@ class DatasetType(Enum):
 class ColumnType(Enum):
     sentence1 = 0,
     sentence2 = 1,
-    labels = 2
+    gold_label = 2
 
 
 columns = [ColumnType.sentence1.name,
