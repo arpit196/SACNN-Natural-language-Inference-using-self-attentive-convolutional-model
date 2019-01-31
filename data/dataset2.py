@@ -130,7 +130,7 @@ class SNLIDataset(DatasetExperiment):
         dataset_test.dropna(inplace=True)
         dataset_test = dataset_test.sample(frac=1, random_state=1).reset_index(drop=True)
         dataset_test['gold_label']=dataset_test.gold_label.astype("category").cat.codes
-        print(dataset_test['gold_label'])
+        print(len(dataset_train['sentence1']))
         #num_instances = len(dataset)
         self.num_train = len(dataset_train)
         self.num_dev = len(dataset_dev)
