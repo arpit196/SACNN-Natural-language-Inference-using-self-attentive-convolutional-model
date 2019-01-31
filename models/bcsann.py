@@ -152,7 +152,7 @@ class AttentionSCnn(BaseSiameseNet):
             X1_agg = tf.reduce_sum(self._X1_comp, 1)
             X2_agg = tf.reduce_sum(self._X2_comp, 1)
             
-            
+            self._agg=tf.concat([X1_agg, X2_agg], 1)
             #self._agg1 = tf.concat([X1_agg, out1], 1)
             #self._agg2 = tf.concat([X2_agg, out2], 1)
             
