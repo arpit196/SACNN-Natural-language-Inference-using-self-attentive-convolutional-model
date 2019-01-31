@@ -166,7 +166,7 @@ class SNLIDataset(DatasetExperiment):
         return self.test[ColumnType.labels.name].as_matrix()
 
     def _data_path(self):
-        return 'data/SNLI/'
+        return 'content/gdrive/My Drive/'
 
 class SICKDataset(DatasetExperiment):
 
