@@ -58,7 +58,6 @@ class AttentionDbCnn(BaseSiameseNet):
             # mask padding sequence
             #mask = tf.multiply(tf.expand_dims(self.premise_mask, 2), tf.expand_dims(self.hypothesis_mask, 1))
             #e = tf.multiply(e_raw, mask)
-            print_shape('e', e)
 
             attentionSoft_a = tf.exp(e - tf.reduce_max(e, axis=2, keepdims=True))
             attentionSoft_b = tf.exp(e - tf.reduce_max(e, axis=1, keepdims=True))
