@@ -66,8 +66,8 @@ class AttentionDbCnn(BaseSiameseNet):
             attentionSoft_b = tf.divide(attentionSoft_b, tf.reduce_sum(attentionSoft_b, axis=1, keepdims=True))
             #attentionSoft_a = tf.multiply(attentionSoft_a, mask)
             #attentionSoft_b = tf.transpose(tf.multiply(attentionSoft_b, mask), [0, 2, 1])
-            beta = tf.matmul(attentionSoft_b, self.embeded_left)
-            alpha = tf.matmul(attentionSoft_a, self.embeded_right)
+            beta = tf.matmul(attentionSoft_b, self.embeded_x1)
+            alpha = tf.matmul(attentionSoft_a, self.embeded_x2)
             a_beta = tf.concat([self.embeded_x1, beta], axis=2)
             b_alpha = tf.concat([self.embeded_x2, alpha], axis=2)
             
