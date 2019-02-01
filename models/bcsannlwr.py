@@ -182,7 +182,7 @@ class AttentionDbCnn(BaseSiameseNet):
             #self._agg2 = tf.concat([X2_agg, out2], 1)
             
         return manhattan_similarity(X1_agg,X2_agg)
-       '''
+        '''
         with tf.name_scope('classifier'):
             L1 = tf.layers.dropout(
                 tf.layers.dense(self._agg, 100, activation=tf.nn.relu, name='L1'),
