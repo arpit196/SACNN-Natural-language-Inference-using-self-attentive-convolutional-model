@@ -73,7 +73,7 @@ class AttentionDbCnn(BaseSiameseNet):
             
         with tf.name_scope('convolutional_layer'):
             X1_conv_1 = tf.layers.conv1d(
-                self._conv_pad(a_alpha),
+                self._conv_pad(b_alpha),
                 _conv_projection_size,
                 _conv_filter_size,
                 padding='valid',
