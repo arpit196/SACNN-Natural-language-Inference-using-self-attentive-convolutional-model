@@ -4,7 +4,7 @@ from argparse import ArgumentParser
 import tensorflow as tf
 from tqdm import tqdm
 
-from data.dataset2 import Dataset, DATASETS
+from data.dataset import Dataset, DATASETS
 from models.model_type import MODELS
 from utils.batch_helper import BatchHelper
 from utils.config_helpers import MainConfig
@@ -158,7 +158,7 @@ def main():
                         help='pipeline mode')
 
     parser.add_argument('model',
-                        choices=['rnn', 'cnn', 'multihead','bcann','bcsann','bcsann1','twolayerbcnn','bcmultihead'],
+                        choices=['rnn', 'cnn', 'multihead','bcann','bcsann','bcsann1','twolayerbcnn','bcmultihead','bcsannlwr'],
                         help='model to be used')
 
     parser.add_argument('dataset',
