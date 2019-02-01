@@ -155,8 +155,7 @@ class SNLIDataset(DatasetExperiment):
 
 DATASETS = {
     DatasetType.QQP.name: QQPDataset,
-    DatasetType.SNLI.name: SNLIDataset,
-    DatasetType.SICK.name: SICKDataset
+    DatasetType.SNLI.name: SNLIDataset
 }
 
 
