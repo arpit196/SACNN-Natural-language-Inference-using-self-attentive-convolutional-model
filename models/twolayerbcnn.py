@@ -161,7 +161,7 @@ class Attention2lyrCnn(BaseSiameseNet):
             
         with tf.name_scope('comparison_layer'):
             X1_comp = tf.layers.dense(
-                tf.concat([self._X1_conv, self._beta, self._beta1,self._X2_conv2,self_beta.lr2,self._beta1_lr2], 2),
+                tf.concat([self._X1_conv, self._beta, self._beta1,self._X2_conv2,self._beta_lr2,self._beta1_lr2], 2),
                 _comparison_output_size,
                 activation=tf.nn.relu,
                 name='comparison_nn'
