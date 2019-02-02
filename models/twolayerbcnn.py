@@ -10,7 +10,7 @@ import numpy as np
 
 _conv_projection_size = 64
 _attention_output_size = 200
-_comparison_output_size = 150
+_comparison_output_size = 250
 
 class Attention2lyrCnn(BaseSiameseNet):
 
@@ -186,7 +186,7 @@ class Attention2lyrCnn(BaseSiameseNet):
             '''
             
             X2_comp = tf.layers.dense(
-                tf.concat([self._X2_conv, self._alpha,self._alpha1,self._X2_conv2,self._alpha_lr2,self.alpha1_lr2], 2),
+                tf.concat([self._X2_conv, self._alpha,self._alpha1,self._X2_conv2,self._alpha_lr2,self._alpha1_lr2], 2),
                 _comparison_output_size,
                 activation=tf.nn.relu,
                 name='comparison_nn',
