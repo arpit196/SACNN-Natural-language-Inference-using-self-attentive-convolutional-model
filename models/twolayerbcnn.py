@@ -161,7 +161,7 @@ class Attention2lyrCnn(BaseSiameseNet):
             
         with tf.name_scope('comparison_layer'):
             X1_comp = tf.layers.dense(
-                tf.concat([self._X1_conv, self._beta, self._beta1], 2),
+                tf.concat([self._X1_conv, self._beta, self._beta1,self._X2_conv2,self_beta.lr2,self._beta1_lr2], 2),
                 _comparison_output_size,
                 activation=tf.nn.relu,
                 name='comparison_nn'
@@ -171,29 +171,35 @@ class Attention2lyrCnn(BaseSiameseNet):
                 tf.expand_dims(tf.sequence_mask(sequence_len, tf.reduce_max(sequence_len), dtype=tf.float32), -1)
             )
             
+            '''
             X1_complr2 = tf.layers.dense(
                 tf.concat([self._X1_conv2, self._beta_lr2, self._beta1_lr2], 2),
                 _comparison_output_size,
                 activation=tf.nn.relu,
                 name='comparison_nn_lr2'
             )
+            
             self._X1_complr2 = tf.multiply(
                 tf.layers.dropout(X1_complr2, rate=self.dropout, training=self.is_training),
                 tf.expand_dims(tf.sequence_mask(sequence_len, tf.reduce_max(sequence_len), dtype=tf.float32), -1)
             )
+            '''
             
             X2_comp = tf.layers.dense(
-                tf.concat([self._X2_conv, self._alpha,self._alpha1], 2),
+                tf.concat([self._X2_conv, self._alpha,self._alpha1,self._X2_conv2,self._alpha_lr2,self.alpha1_lr2], 2),
                 _comparison_output_size,
                 activation=tf.nn.relu,
                 name='comparison_nn',
                 reuse=True
             )
+            
+            
             self._X2_comp = tf.multiply(
                 tf.layers.dropout(X2_comp, rate=self.dropout, training=self.is_training),
                 tf.expand_dims(tf.sequence_mask(sequence_len, tf.reduce_max(sequence_len), dtype=tf.float32), -1)
             )
             
+            '''
             X2_complr2 = tf.layers.dense(
                 tf.concat([self._X2_conv2, self._alpha_lr2,self._alpha1_lr2], 2),
                 _comparison_output_size,
@@ -205,15 +211,17 @@ class Attention2lyrCnn(BaseSiameseNet):
                 tf.layers.dropout(X2_complr2, rate=self.dropout, training=self.is_training),
                 tf.expand_dims(tf.sequence_mask(sequence_len, tf.reduce_max(sequence_len), dtype=tf.float32), -1)
             )
+            '''
         
             X1_agg = tf.reduce_sum(self._X1_comp, 1)
             X2_agg = tf.reduce_sum(self._X2_comp, 1)
-            X1_agglr2 =tf.reduce_sum(self._X1_complr2, 1)
-            X2_agglr2 =tf.reduce_sum(self._X2_complr2, 1)
-            _agg1 = tf.concat([X1_agg, X1_agglr2], 1)
-            _agg2 = tf.concat([X2_agg, X2_agglr2],1)
+            #X1_agglr2 =tf.reduce_sum(self._X1_complr2, 1)
+            #X2_agglr2 =tf.reduce_sum(self._X2_complr2, 1)
+            #_agg1 = tf.concat([X1_agg, X1_agglr2], 1)
+            #_agg2 = tf.concat([X2_agg, X2_agglr2],1)
         
-        return manhattan_similarity(_agg1,_agg2)
+        return manhattan_similarity(X1_agg,X2_agg)
+    
         '''
         with tf.name_scope('classifier'):
             L1 = tf.layers.dropout(
