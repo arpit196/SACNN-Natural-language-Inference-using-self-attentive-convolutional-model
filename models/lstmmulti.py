@@ -17,7 +17,7 @@ _comparison_output_size = 120
 class AttentionMultiLCnn(BaseSiameseNet):
 
     def __init__(self, max_sequence_len, vocabulary_size, main_cfg, model_cfg):
-        BaseSiameseNet.__init__(self, max_sequence_len, vocabulary_size, main_cfg, model_cfg, cross_entropy)
+        BaseSiameseNet.__init__(self, max_sequence_len, vocabulary_size, main_cfg, model_cfg, mse)
           
         
     def _masked_softmax(self, values, lengths):
