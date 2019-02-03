@@ -60,8 +60,8 @@ class AttentionSCnn(BaseSiameseNet):
                                               use_residual=False,
                                               is_training=self.is_training,
                                               reuse=True)
-        outputs_sen1 = rnn_layer(stacked1, 100, cell_type)
-        outputs_sen2 = rnn_layer(stacked2, 100, cell_type, reuse=True)
+        outputs_sen1 = rnn_layer(stacked1, 128, cell_type)
+        outputs_sen2 = rnn_layer(stacked2, 128, cell_type, reuse=True)
         
         '''
         with tf.name_scope('convolutional_layer'):
