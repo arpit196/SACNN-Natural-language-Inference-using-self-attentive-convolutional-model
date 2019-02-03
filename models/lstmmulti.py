@@ -48,6 +48,19 @@ class AttentionSCnn(BaseSiameseNet):
     def siamese_layer(self, sequence_len, model_cfg):
         _conv_filter_size = 3
         #parse_list(model_cfg['PARAMS']['filter_sizes'])
+        stacked1, self.debug = stacked_multihead_attention(self.embedded_x1,
+                                                       num_blocks=2,
+                                                       num_heads=8,
+                                                       use_residual=False,
+                                                       is_training=self.is_training)
+
+        stacked2, _ = stacked_multihead_attention(self.embedded_x2,
+                                              num_blocks=2,
+                                              num_heads=8,
+                                              use_residual=False,
+                                              is_training=self.is_training,
+                                              reuse=True)
+        '''
         with tf.name_scope('convolutional_layer'):
             X1_conv_1 = tf.layers.conv1d(
                 self._conv_pad(self.embedded_x1),
@@ -120,7 +133,8 @@ class AttentionSCnn(BaseSiameseNet):
             e = tf.matmul(e_X1, e_X2, transpose_b=True, name='e')
             
             self._alpha1 = tf.matmul(self._masked_softmax(e, sequence_len), self._X2_conv, name='beta2')
-            
+        '''
+        
         with tf.name_scope('comparison_layer'):
             X1_comp = tf.layers.dense(
                 tf.concat([self._X1_conv, self._beta, self._beta1], 2),
