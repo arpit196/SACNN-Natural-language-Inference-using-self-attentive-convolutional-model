@@ -13,7 +13,7 @@ _conv_projection_size = 64
 _attention_output_size = 100
 _comparison_output_size = 120
 
-class AttentionSCnn(BaseSiameseNet):
+class AttentionMultiLCnn(BaseSiameseNet):
 
     def __init__(self, max_sequence_len, vocabulary_size, main_cfg, model_cfg):
         BaseSiameseNet.__init__(self, max_sequence_len, vocabulary_size, main_cfg, model_cfg, cross_entropy)
