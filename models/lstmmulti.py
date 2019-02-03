@@ -60,8 +60,9 @@ class AttentionSCnn(BaseSiameseNet):
                                               use_residual=False,
                                               is_training=self.is_training,
                                               reuse=True)
-        outputs_sen1 = rnn_layer(stacked1, hidden_size, cell_type)
-        outputs_sen2 = rnn_layer(stacked2, hidden_size, cell_type, reuse=True)
+        outputs_sen1 = rnn_layer(stacked1, 100, cell_type)
+        outputs_sen2 = rnn_layer(stacked2, 100, cell_type, reuse=True)
+        
         '''
         with tf.name_scope('convolutional_layer'):
             X1_conv_1 = tf.layers.conv1d(
@@ -138,6 +139,7 @@ class AttentionSCnn(BaseSiameseNet):
         '''
         
         with tf.name_scope('comparison_layer'):
+            '''
             X1_comp = tf.layers.dense(
                 tf.concat([self._X1_conv, self._beta, self._beta1], 2),
                 _comparison_output_size,
@@ -165,9 +167,10 @@ class AttentionSCnn(BaseSiameseNet):
 
             #out1 = tf.reduce_mean(outputs_sen1, axis=1)
             #out2 = tf.reduce_mean(outputs_sen2, axis=1)
+            '''
             
-            X1_agg = tf.reduce_sum(self._X1_comp, 1)
-            X2_agg = tf.reduce_sum(self._X2_comp, 1)
+            X1_agg = tf.reduce_sum(outputs_sent1, 1)
+            X2_agg = tf.reduce_sum(outputs_sent2, 1)
             
             self._agg=tf.concat([X1_agg, X2_agg], 1)
             #self._agg1 = tf.concat([X1_agg, out1], 1)
