@@ -64,6 +64,12 @@ class AttentionMultiLCnn(BaseSiameseNet):
         outputs_sent1 = rnn_layer(stacked1, hidden_size=128, cell_type='GRU',bidirectional=True)
         outputs_sent2 = rnn_layer(stacked2, hidden_size=128, cell_type='GRU',bidirectional=True,reuse=True)
         
+        F_a_bar  = self._feedForwardBlock(self.embeded_left, self.hidden_size, 'F')
+        F_b_bar = self._feedForwardBlock(self.embeded_right, self.hidden_size, 'F', isReuse = True)
+        e_raw = tf.matmul(F_a_bar, tf.transpose(F_b_bar, [0, 2, 1]))
+            # mask padding sequence
+            mask = tf.multiply(tf.expand_dims(self.premise_mask, 2), tf.expand_dims(self.hypothesis_mask, 1))
+        e = tf.multiply(e_raw, mask)
         '''
         with tf.name_scope('convolutional_layer'):
             X1_conv_1 = tf.layers.conv1d(
