@@ -61,8 +61,8 @@ class AttentionMultiLCnn(BaseSiameseNet):
                                               use_residual=False,
                                               is_training=self.is_training,
                                               reuse=True)
-        outputs_sen1 = rnn_layer(stacked1, hidden_size=128, cell_type='GRU')
-        outputs_sen2 = rnn_layer(stacked2, hidden_size=128, cell_type='GRU', reuse=True)
+        outputs_sen1 = rnn_layer(stacked1, hidden_size=128, cell_type='GRU',bidirectional=True)
+        outputs_sen2 = rnn_layer(stacked2, hidden_size=128, cell_type='GRU',bidirectional=True,reuse=True)
         
         '''
         with tf.name_scope('convolutional_layer'):
