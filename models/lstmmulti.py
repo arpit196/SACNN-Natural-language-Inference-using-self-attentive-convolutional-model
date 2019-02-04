@@ -4,6 +4,7 @@ from layers.losses import cross_entropy
 from layers.similarity import manhattan_similarity
 from models.base_model import BaseSiameseNet
 from layers.recurrent import rnn_layer
+from layers.recurrent import rnn_layer
 from utils.config_helpers import parse_list
 from layers.attention import stacked_multihead_attention
 from layers.basics import dropout
@@ -42,33 +43,19 @@ class AttentionMultiLCnn(BaseSiameseNet):
                 initializer = tf.contrib.layers.xavier_initializer()
 
             with tf.variable_scope('feed_foward_layer1'):
-                inputs = tf.nn.dropout(inputs, self.dropout_keep_prob)
+                inputs = tf.nn.dropout(inputs, self.dropout)
                 outputs = tf.layers.dense(inputs, num_units, tf.nn.relu, kernel_initializer = initializer)
             with tf.variable_scope('feed_foward_layer2'):
-                outputs = tf.nn.dropout(outputs, self.dropout_keep_prob)
+                outputs = tf.nn.dropout(outputs, self.dropout)
                 resluts = tf.layers.dense(outputs, num_units, tf.nn.relu, kernel_initializer = initializer)
                 return resluts
             
     def siamese_layer(self, sequence_len, model_cfg):
         _conv_filter_size = 3
         #parse_list(model_cfg['PARAMS']['filter_sizes'])
-        stacked1, self.debug = stacked_multihead_attention(self.embedded_x1,
-                                                       num_blocks=2,
-                                                       num_heads=8,
-                                                       use_residual=False,
-                                                       is_training=self.is_training)
-
-        stacked2, _ = stacked_multihead_attention(self.embedded_x2,
-                                              num_blocks=2,
-                                              num_heads=8,
-                                              use_residual=False,
-                                              is_training=self.is_training,
-                                              reuse=True)
-        outputs_sent1 = rnn_layer(stacked1, hidden_size=128, cell_type='GRU',bidirectional=True)
-        outputs_sent2 = rnn_layer(stacked2, hidden_size=128, cell_type='GRU',bidirectional=True,reuse=True)
         
-        F_a_bar  = self._feedForwardBlock(self.embeded_left, self.hidden_size, 'F')
-        F_b_bar = self._feedForwardBlock(self.embeded_right, self.hidden_size, 'F', isReuse = True)
+        F_a_bar  = self._feedForwardBlock(self.embeded_x1, 128, 'F')
+        F_b_bar = self._feedForwardBlock(self.embeded_x2, 128, 'F', isReuse = True)
         e = tf.matmul(F_a_bar, tf.transpose(F_b_bar, [0, 2, 1]))
         attentionSoft_a = tf.exp(e - tf.reduce_max(e, axis=2, keepdims=True))
         attentionSoft_b = tf.exp(e - tf.reduce_max(e, axis=1, keepdims=True))
@@ -78,8 +65,31 @@ class AttentionMultiLCnn(BaseSiameseNet):
         
         beta = tf.matmul(attentionSoft_b, self.embeded_x1)
         alpha = tf.matmul(attentionSoft_a, self.embeded_x2)
+        a_beta = tf.concat([self.embeded_x1, beta], axis=2)
+        b_alpha = tf.concat([self.embeded_x2, alpha], axis=2)
+        v_1 = self._feedForwardBlock(a_beta, 128, 'G')
+        v_2 = self._feedForwardBlock(b_alpha, 128, 'G', isReuse=True)
         
+        outputs_sen1 = rnn_layer(v1, hidden_size, cell_type)
+        outputs_sen2 = rnn_layer(v2, hidden_size, cell_type, reuse=True)
         
+        stacked1, self.debug = stacked_multihead_attention(outputs_sen1,
+                                                       num_blocks=2,
+                                                       num_heads=4,
+                                                       use_residual=False,
+                                                       is_training=self.is_training)
+
+        stacked2, _ = stacked_multihead_attention(outputs_sen2,
+                                              num_blocks=2,
+                                              num_heads=4,
+                                              use_residual=False,
+                                              is_training=self.is_training,
+                                              reuse=True)
+        
+        out1 = tf.reduce_mean(stacked1, axis=1)
+        out2 = tf.reduce_mean(stacked2, axis=1)
+        
+        return manhattan_similarity(out1, out2)
         #e = tf.multiply(e_raw, mask)
         '''
         with tf.name_scope('convolutional_layer'):
@@ -187,14 +197,14 @@ class AttentionMultiLCnn(BaseSiameseNet):
             #out2 = tf.reduce_mean(outputs_sen2, axis=1)
             '''
             
-            X1_agg = tf.reduce_sum(outputs_sent1, 1)
-            X2_agg = tf.reduce_sum(outputs_sent2, 1)
+            #X1_agg = tf.reduce_sum(outputs_sent1, 1)
+            #X2_agg = tf.reduce_sum(outputs_sent2, 1)
             
-            self._agg=tf.concat([X1_agg, X2_agg], 1)
+            #self._agg=tf.concat([X1_agg, X2_agg], 1)
             #self._agg1 = tf.concat([X1_agg, out1], 1)
             #self._agg2 = tf.concat([X2_agg, out2], 1)
             
-        return manhattan_similarity(X1_agg,X2_agg)
+        return manhattan_similarity(out1,X2_agg)
         '''
         with tf.name_scope('classifier'):
             L1 = tf.layers.dropout(
