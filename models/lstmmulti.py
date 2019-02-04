@@ -40,8 +40,6 @@ class AttentionMultiLCnn(BaseSiameseNet):
                                                              embedded_x,
                                                              dtype=tf.float32)
             output = tf.concat([rnn_outputs[0], rnn_outputs[1]], axis=2)
-            
-dtype=tf.float32)
     
     def _feedForwardBlock(self, inputs, num_units, scope, isReuse = False, initializer = None):
         """
