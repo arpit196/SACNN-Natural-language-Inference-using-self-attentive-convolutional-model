@@ -54,8 +54,8 @@ class AttentionMultiLCnn(BaseSiameseNet):
         _conv_filter_size = 3
         #parse_list(model_cfg['PARAMS']['filter_sizes'])
         
-        F_a_bar  = self._feedForwardBlock(self.embeded_x1, 128, 'F')
-        F_b_bar = self._feedForwardBlock(self.embeded_x2, 128, 'F', isReuse = True)
+        F_a_bar  = self._feedForwardBlock(self.embedded_x1, 128, 'F')
+        F_b_bar = self._feedForwardBlock(self.embedded_x2, 128, 'F', isReuse = True)
         e = tf.matmul(F_a_bar, tf.transpose(F_b_bar, [0, 2, 1]))
         attentionSoft_a = tf.exp(e - tf.reduce_max(e, axis=2, keepdims=True))
         attentionSoft_b = tf.exp(e - tf.reduce_max(e, axis=1, keepdims=True))
