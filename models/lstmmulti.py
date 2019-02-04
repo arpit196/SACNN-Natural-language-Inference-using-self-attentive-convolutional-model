@@ -4,7 +4,6 @@ from layers.losses import cross_entropy
 from layers.similarity import manhattan_similarity
 from models.base_model import BaseSiameseNet
 from layers.recurrent import rnn_layer
-from layers.recurrent import rnn_layer
 from utils.config_helpers import parse_list
 from layers.attention import stacked_multihead_attention
 from layers.basics import dropout
@@ -30,7 +29,7 @@ class AttentionMultiLCnn(BaseSiameseNet):
 
             return tf.nn.softmax(tf.multiply(values, mask) + inf_mask)
        
-    def rnn_layer1(embedded_x, hidden_size, reuse=False):
+    def rnn_layer1(self,embedded_x, hidden_size, reuse=False):
         with tf.variable_scope('recurrent1', reuse=reuse):
             cell = tf.nn.rnn_cell.GRUCell
             fw_rnn_cell = cell(hidden_size)
