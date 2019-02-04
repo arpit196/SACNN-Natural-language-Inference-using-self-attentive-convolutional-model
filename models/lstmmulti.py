@@ -70,8 +70,8 @@ class AttentionMultiLCnn(BaseSiameseNet):
         v_1 = self._feedForwardBlock(a_beta, 128, 'G')
         v_2 = self._feedForwardBlock(b_alpha, 128, 'G', isReuse=True)
         
-        outputs_sen1 = rnn_layer(v_1, 128, cell_type)
-        outputs_sen2 = rnn_layer(v_2, 128, cell_type, reuse=True)
+        outputs_sen1 = rnn_layer(v_1, 128, cell_type='GRU')
+        outputs_sen2 = rnn_layer(v_2, 128, cell_type='GRU', reuse=True)
         
         stacked1, self.debug = stacked_multihead_attention(outputs_sen1,
                                                        num_blocks=2,
