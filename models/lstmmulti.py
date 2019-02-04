@@ -80,8 +80,8 @@ class AttentionMultiLCnn(BaseSiameseNet):
         a_beta = tf.concat([self.embedded_x1, beta], axis=2)
         b_alpha = tf.concat([self.embedded_x2, alpha], axis=2)
         '''
-        v_1, attentions = multihead_attention(embedded_x1, embedded_x2, embedded_x2, use_residual=False, is_training=self.is_training, num_heads=4)
-        v_2, attentions = multihead_attention(embedded_x2, embedded_x1, embedded_x1, use_residual=False, is_training=self.is_training, num_heads=4,reuse=True)
+        v_1, attentions = multihead_attention(self.embedded_x1, self.embedded_x2, self.embedded_x2, use_residual=False, is_training=self.is_training, num_heads=4)
+        v_2, attentions = multihead_attention(self.embedded_x2, self.embedded_x1, self.embedded_x1, use_residual=False, is_training=self.is_training, num_heads=4,reuse=True)
         
         outputs_sen1 = rnn_layer(v_1, 128, cell_type='GRU',bidirectional=True)
         outputs_sen2 = rnn_layer(v_2, 128, cell_type='GRU',bidirectional=True, reuse=True)
