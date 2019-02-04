@@ -86,6 +86,9 @@ class AttentionMultiLCnn(BaseSiameseNet):
                                               is_training=self.is_training,
                                               reuse=True)
         
+        outputs_sen1 = rnn_layer(stacked1, 128, cell_type='GRU',bidirectional=True)
+        outputs_sen2 = rnn_layer(stacked2, 128, cell_type='GRU',bidirectional=True, reuse=True)
+        
         out1 = tf.reduce_mean(stacked1, axis=1)
         out2 = tf.reduce_mean(stacked2, axis=1)
         
