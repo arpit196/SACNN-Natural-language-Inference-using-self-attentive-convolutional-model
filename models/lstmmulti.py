@@ -28,23 +28,26 @@ class AttentionMultiLCnn(BaseSiameseNet):
             inf_mask = tf.where(tf.is_nan(inf_mask), tf.zeros_like(inf_mask), inf_mask)
 
             return tf.nn.softmax(tf.multiply(values, mask) + inf_mask)
-        
-    def _conv_pad(self, values):
-        with tf.name_scope('convolutional_padding'):
-            pad = tf.zeros([tf.shape(self.x1)[0], 1, self.embedding_size])
-            return tf.concat([pad, values, pad], axis=1)
-        
+       
+       
+    def _feedForwardBlock(self, inputs, num_units, scope, isReuse = False, initializer = None):
+        """
+        :param inputs: tensor with shape (batch_size, seq_length, embedding_size)
+        :param num_units: dimensions of each feed forward layer
+        :param scope: scope name
+        :return: output: tensor with shape (batch_size, num_units)
+        """
+        with tf.variable_scope(scope, reuse = isReuse):
+            if initializer is None:
+                initializer = tf.contrib.layers.xavier_initializer()
 
-    def _attention_layer(self):
-        with tf.name_scope('attention_layer'):
-            e_X1 = tf.layers.dense(self._X1_conv, _attention_output_size, activation=tf.nn.relu, name='attention_nn')
-            e_X2=tf.layers.dense(self._X2_conv, _attention_output_size, activation=tf.nn.relu,
-                                 name='attention_nn',reuse=True)
-            
-            e = tf.matmul(e_X1, e_X2, transpose_b=True, name='e')
-            
-            self._beta = tf.matmul(self._masked_softmax(e, sequence_len), self._X2_conv, name='beta2')
-            self._alpha = tf.matmul(self._masked_softmax(tf.transpose(e, [0,2,1]), sequence_len), self._X1_conv, name='alpha2')
+            with tf.variable_scope('feed_foward_layer1'):
+                inputs = tf.nn.dropout(inputs, self.dropout_keep_prob)
+                outputs = tf.layers.dense(inputs, num_units, tf.nn.relu, kernel_initializer = initializer)
+            with tf.variable_scope('feed_foward_layer2'):
+                outputs = tf.nn.dropout(outputs, self.dropout_keep_prob)
+                resluts = tf.layers.dense(outputs, num_units, tf.nn.relu, kernel_initializer = initializer)
+                return resluts
             
     def siamese_layer(self, sequence_len, model_cfg):
         _conv_filter_size = 3
@@ -66,10 +69,18 @@ class AttentionMultiLCnn(BaseSiameseNet):
         
         F_a_bar  = self._feedForwardBlock(self.embeded_left, self.hidden_size, 'F')
         F_b_bar = self._feedForwardBlock(self.embeded_right, self.hidden_size, 'F', isReuse = True)
-        e_raw = tf.matmul(F_a_bar, tf.transpose(F_b_bar, [0, 2, 1]))
-            # mask padding sequence
-            mask = tf.multiply(tf.expand_dims(self.premise_mask, 2), tf.expand_dims(self.hypothesis_mask, 1))
-        e = tf.multiply(e_raw, mask)
+        e = tf.matmul(F_a_bar, tf.transpose(F_b_bar, [0, 2, 1]))
+        attentionSoft_a = tf.exp(e - tf.reduce_max(e, axis=2, keepdims=True))
+        attentionSoft_b = tf.exp(e - tf.reduce_max(e, axis=1, keepdims=True))
+            # mask attention weights
+        attentionSoft_a = tf.divide(attentionSoft_a, tf.reduce_sum(attentionSoft_a, axis=2, keepdims=True))
+        attentionSoft_b = tf.divide(attentionSoft_b, tf.reduce_sum(attentionSoft_b, axis=1, keepdims=True))
+        
+        beta = tf.matmul(attentionSoft_b, self.embeded_x1)
+        alpha = tf.matmul(attentionSoft_a, self.embeded_x2)
+        
+        
+        #e = tf.multiply(e_raw, mask)
         '''
         with tf.name_scope('convolutional_layer'):
             X1_conv_1 = tf.layers.conv1d(
