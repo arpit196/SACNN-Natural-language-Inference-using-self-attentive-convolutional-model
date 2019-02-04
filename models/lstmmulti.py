@@ -30,7 +30,19 @@ class AttentionMultiLCnn(BaseSiameseNet):
 
             return tf.nn.softmax(tf.multiply(values, mask) + inf_mask)
        
-       
+    def rnn_layer1(embedded_x, hidden_size, reuse=False):
+        with tf.variable_scope('recurrent1', reuse=reuse):
+            cell = tf.nn.rnn_cell.GRUCell
+            fw_rnn_cell = cell(hidden_size)
+            bw_rnn_cell = cell(hidden_size)
+            rnn_outputs, _ = tf.nn.bidirectional_dynamic_rnn(fw_rnn_cell,
+                                                             bw_rnn_cell,
+                                                             embedded_x,
+                                                             dtype=tf.float32)
+            output = tf.concat([rnn_outputs[0], rnn_outputs[1]], axis=2)
+            
+dtype=tf.float32)
+    
     def _feedForwardBlock(self, inputs, num_units, scope, isReuse = False, initializer = None):
         """
         :param inputs: tensor with shape (batch_size, seq_length, embedding_size)
@@ -86,8 +98,8 @@ class AttentionMultiLCnn(BaseSiameseNet):
                                               is_training=self.is_training,
                                               reuse=True)
         
-        outputs_sen1 = rnn_layer(stacked1, 128, cell_type='GRU',bidirectional=True)
-        outputs_sen2 = rnn_layer(stacked2, 128, cell_type='GRU',bidirectional=True, reuse=True)
+        outputs_sen1 = self.rnn_layer1(stacked1, 128)
+        outputs_sen2 = self.rnn_layer1(stacked2, 128,reuse=True)
         
         out1 = tf.reduce_mean(stacked1, axis=1)
         out2 = tf.reduce_mean(stacked2, axis=1)
