@@ -6,6 +6,7 @@ from models.base_model import BaseSiameseNet
 from layers.recurrent import rnn_layer
 from utils.config_helpers import parse_list
 from layers.attention import stacked_multihead_attention
+from layers.attention import multihead_attention
 from layers.basics import dropout
 import tensorflow as tf
 import numpy as np
@@ -64,7 +65,7 @@ class AttentionMultiLCnn(BaseSiameseNet):
     def siamese_layer(self, sequence_len, model_cfg):
         _conv_filter_size = 3
         #parse_list(model_cfg['PARAMS']['filter_sizes'])
-        
+        '''
         F_a_bar  = self._feedForwardBlock(self.embedded_x1, 128, 'F')
         F_b_bar = self._feedForwardBlock(self.embedded_x2, 128, 'F', isReuse = True)
         e = tf.matmul(F_a_bar, tf.transpose(F_b_bar, [0, 2, 1]))
@@ -78,11 +79,13 @@ class AttentionMultiLCnn(BaseSiameseNet):
         alpha = tf.matmul(attentionSoft_a, self.embedded_x2)
         a_beta = tf.concat([self.embedded_x1, beta], axis=2)
         b_alpha = tf.concat([self.embedded_x2, alpha], axis=2)
-        v_1 = self._feedForwardBlock(a_beta, 128, 'G')
-        v_2 = self._feedForwardBlock(b_alpha, 128, 'G', isReuse=True)
+        '''
+        v_1, attentions = multihead_attention(embedded_x1, embedded_x2, embedded_x2, use_residual=False, is_training, num_heads=4)
+        v_2, attentions = multihead_attention(embedded_x2, embedded_x1, embedded_x1, use_residual=False, is_training, num_heads=4)
         
         outputs_sen1 = rnn_layer(v_1, 128, cell_type='GRU',bidirectional=True)
         outputs_sen2 = rnn_layer(v_2, 128, cell_type='GRU',bidirectional=True, reuse=True)
+        
         
         stacked1, self.debug = stacked_multihead_attention(outputs_sen1,
                                                        num_blocks=2,
