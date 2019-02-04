@@ -63,15 +63,15 @@ class AttentionMultiLCnn(BaseSiameseNet):
         attentionSoft_a = tf.divide(attentionSoft_a, tf.reduce_sum(attentionSoft_a, axis=2, keepdims=True))
         attentionSoft_b = tf.divide(attentionSoft_b, tf.reduce_sum(attentionSoft_b, axis=1, keepdims=True))
         
-        beta = tf.matmul(attentionSoft_b, self.embeded_x1)
-        alpha = tf.matmul(attentionSoft_a, self.embeded_x2)
-        a_beta = tf.concat([self.embeded_x1, beta], axis=2)
-        b_alpha = tf.concat([self.embeded_x2, alpha], axis=2)
+        beta = tf.matmul(attentionSoft_b, self.embedded_x1)
+        alpha = tf.matmul(attentionSoft_a, self.embedded_x2)
+        a_beta = tf.concat([self.embedded_x1, beta], axis=2)
+        b_alpha = tf.concat([self.embedded_x2, alpha], axis=2)
         v_1 = self._feedForwardBlock(a_beta, 128, 'G')
         v_2 = self._feedForwardBlock(b_alpha, 128, 'G', isReuse=True)
         
-        outputs_sen1 = rnn_layer(v1, hidden_size, cell_type)
-        outputs_sen2 = rnn_layer(v2, hidden_size, cell_type, reuse=True)
+        outputs_sen1 = rnn_layer(v1, 128, cell_type)
+        outputs_sen2 = rnn_layer(v2, 128, cell_type, reuse=True)
         
         stacked1, self.debug = stacked_multihead_attention(outputs_sen1,
                                                        num_blocks=2,
@@ -204,7 +204,7 @@ class AttentionMultiLCnn(BaseSiameseNet):
             #self._agg1 = tf.concat([X1_agg, out1], 1)
             #self._agg2 = tf.concat([X2_agg, out2], 1)
             
-        return manhattan_similarity(out1,X2_agg)
+        return manhattan_similarity(out1,out2)
         '''
         with tf.name_scope('classifier'):
             L1 = tf.layers.dropout(
