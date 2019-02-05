@@ -11,7 +11,7 @@ from layers.basics import dropout
 import tensorflow as tf
 import numpy as np
 
-_conv_projection_size = 64
+_conv_projection_size = 128
 _attention_output_size = 100
 _comparison_output_size = 120
 
@@ -32,7 +32,7 @@ class AttentionMultiLCnn(BaseSiameseNet):
     
     def _conv_pad(self, values):
         with tf.name_scope('convolutional_padding'):
-            pad = tf.zeros([tf.shape(self.x1)[0], 1, self.embedding_size])
+            pad = tf.zeros([tf.shape(self.x1)[0], 1, 128])
             return tf.concat([pad, values, pad], axis=1)
         
     def rnn_layer1(self,embedded_x, hidden_size, reuse=False):
