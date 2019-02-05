@@ -32,7 +32,7 @@ class AttentionMultiLCnn(BaseSiameseNet):
     
     def _conv_pad(self, values):
         with tf.name_scope('convolutional_padding'):
-            pad = tf.zeros([tf.shape(self.x1)[0], 1, 128])
+            pad = tf.zeros([tf.shape(self.x1)[0], 1, _conv_projection_size])
             return tf.concat([pad, values, pad], axis=1)
         
     def rnn_layer1(self,embedded_x, hidden_size, reuse=False):
