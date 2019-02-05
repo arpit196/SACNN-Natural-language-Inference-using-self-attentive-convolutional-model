@@ -65,9 +65,9 @@ class AttentionMultiLCnn(BaseSiameseNet):
     def siamese_layer(self, sequence_len, model_cfg):
         _conv_filter_size = 3
         #parse_list(model_cfg['PARAMS']['filter_sizes'])
-        '''
-        F_a_bar  = self._feedForwardBlock(self.embedded_x1, 128, 'F')
-        F_b_bar = self._feedForwardBlock(self.embedded_x2, 128, 'F', isReuse = True)
+        
+        F_a_bar  = self._feedForwardBlock(self.embedded_x1, 64, 'F')
+        F_b_bar = self._feedForwardBlock(self.embedded_x2, 64, 'F', isReuse = True)
         e = tf.matmul(F_a_bar, tf.transpose(F_b_bar, [0, 2, 1]))
         attentionSoft_a = tf.exp(e - tf.reduce_max(e, axis=2, keepdims=True))
         attentionSoft_b = tf.exp(e - tf.reduce_max(e, axis=1, keepdims=True))
@@ -79,42 +79,40 @@ class AttentionMultiLCnn(BaseSiameseNet):
         alpha = tf.matmul(attentionSoft_a, self.embedded_x2)
         a_beta = tf.concat([self.embedded_x1, beta], axis=2)
         b_alpha = tf.concat([self.embedded_x2, alpha], axis=2)
+        
+        v_1 = self._feedForwardBlock(a_beta, 64, 'G')
+        v_2 = self._feedForwardBlock(b_alpha, 64, 'G', isReuse=True)
+        
+        outputs_sen1 = rnn_layer(v_1, 64, cell_type='GRU',bidirectional=True)
+        outputs_sen2 = rnn_layer(v_2, 64, cell_type='GRU',bidirectional=True, reuse=True)
+        
         '''
-        v_1, attentions = multihead_attention(self.embedded_x1, self.embedded_x2, self.embedded_x2, use_residual=False, is_training=self.is_training, num_heads=4)
-        v_2, attentions = multihead_attention(self.embedded_x2, self.embedded_x1, self.embedded_x1, use_residual=False, is_training=self.is_training, num_heads=4,reuse=True)
-        
-        #outputs_sen1 = rnn_layer(v_1, 128, cell_type='GRU',bidirectional=True)
-        #outputs_sen2 = rnn_layer(v_2, 128, cell_type='GRU',bidirectional=True, reuse=True)
-        
-        
         stacked1, self.debug = stacked_multihead_attention(v_1,
                                                        num_blocks=1,
-                                                       num_heads=4,
+                                                       num_heads=2,
                                                        use_residual=False,
                                                        is_training=self.is_training)
 
         stacked2, _ = stacked_multihead_attention(v_2,
                                               num_blocks=1,
-                                              num_heads=4,
+                                              num_heads=2,
                                               use_residual=False,
                                               is_training=self.is_training,
                                               reuse=True)
+        '''                                      
         
-        outputs_sen1 = self.rnn_layer1(stacked1, 128)
-        outputs_sen2 = self.rnn_layer1(stacked2, 128,reuse=True)
+        #outputs_sen1 = self.rnn_layer1(stacked1, 64)
+        #outputs_sen2 = self.rnn_layer1(stacked2, 64,reuse=True)
         
-        out1 = tf.reduce_mean(stacked1, axis=1)
-        out2 = tf.reduce_mean(stacked2, axis=1)
+        #out1 = tf.reduce_mean(stacked1, axis=1)
+        #out2 = tf.reduce_mean(stacked2, axis=1)
         out11= tf.reduce_mean(outputs_sen1, axis=1)
         out12 = tf.reduce_mean(outputs_sen2, axis=1)
-        outa=tf.concat([out1,out11],1)
-        outb=tf.concat([out2,out12],1)
-        return manhattan_similarity(outa, outb)
-        #e = tf.multiply(e_raw, mask)
-        '''
+        #return manhattan_similarity(outa, outb)
+        
         with tf.name_scope('convolutional_layer'):
             X1_conv_1 = tf.layers.conv1d(
-                self._conv_pad(self.embedded_x1),
+                self._conv_pad(outputs_sen1),
                 _conv_projection_size,
                 _conv_filter_size,
                 padding='valid',
@@ -123,7 +121,7 @@ class AttentionMultiLCnn(BaseSiameseNet):
             )
             
             X2_conv_1 = tf.layers.conv1d(
-                self._conv_pad(self.embedded_x2),
+                self._conv_pad(outputs_sen2),
                 _conv_projection_size,
                 _conv_filter_size,
                 padding='valid',
@@ -184,10 +182,10 @@ class AttentionMultiLCnn(BaseSiameseNet):
             e = tf.matmul(e_X1, e_X2, transpose_b=True, name='e')
             
             self._alpha1 = tf.matmul(self._masked_softmax(e, sequence_len), self._X2_conv, name='beta2')
-        '''
+        
         
         with tf.name_scope('comparison_layer'):
-            '''
+            
             X1_comp = tf.layers.dense(
                 tf.concat([self._X1_conv, self._beta, self._beta1], 2),
                 _comparison_output_size,
@@ -210,21 +208,15 @@ class AttentionMultiLCnn(BaseSiameseNet):
                 tf.layers.dropout(X2_comp, rate=self.dropout, training=self.is_training),
                 tf.expand_dims(tf.sequence_mask(sequence_len, tf.reduce_max(sequence_len), dtype=tf.float32), -1)
             )
-            #outputs_sen1 = rnn_layer(self.embedded_x1, hidden_size=128, cell_type='GRU', bidirectional=True)
-            #outputs_sen2 = rnn_layer(self.embedded_x2, hidden_size=128, cell_type='GRU', bidirectional=True, reuse=True)
-
-            #out1 = tf.reduce_mean(outputs_sen1, axis=1)
-            #out2 = tf.reduce_mean(outputs_sen2, axis=1)
-            '''
             
-            #X1_agg = tf.reduce_sum(outputs_sent1, 1)
-            #X2_agg = tf.reduce_sum(outputs_sent2, 1)
+            X1_agg = tf.reduce_sum(self._X1_comp, 1)
+            X2_agg = tf.reduce_sum(self._X2_comp, 1)
             
             #self._agg=tf.concat([X1_agg, X2_agg], 1)
-            #self._agg1 = tf.concat([X1_agg, out1], 1)
-            #self._agg2 = tf.concat([X2_agg, out2], 1)
+            self._agg1 = tf.concat([X1_agg, out11], 1)
+            self._agg2 = tf.concat([X2_agg, out12], 1)
             
-        #return manhattan_similarity(out1,out2)
+        return manhattan_similarity(self._agg1,self._agg2)
         '''
         with tf.name_scope('classifier'):
             L1 = tf.layers.dropout(
