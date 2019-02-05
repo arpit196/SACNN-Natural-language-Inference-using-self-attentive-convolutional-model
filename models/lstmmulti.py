@@ -29,7 +29,12 @@ class AttentionMultiLCnn(BaseSiameseNet):
             inf_mask = tf.where(tf.is_nan(inf_mask), tf.zeros_like(inf_mask), inf_mask)
 
             return tf.nn.softmax(tf.multiply(values, mask) + inf_mask)
-       
+    
+    def _conv_pad(self, values):
+        with tf.name_scope('convolutional_padding'):
+            pad = tf.zeros([tf.shape(self.x1)[0], 1, self.embedding_size])
+            return tf.concat([pad, values, pad], axis=1)
+        
     def rnn_layer1(self,embedded_x, hidden_size, reuse=False):
         with tf.variable_scope('recurrent1', reuse=reuse):
             cell = tf.nn.rnn_cell.GRUCell
