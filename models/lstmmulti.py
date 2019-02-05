@@ -11,7 +11,7 @@ from layers.basics import dropout
 import tensorflow as tf
 import numpy as np
 
-_conv_projection_size = 128
+_conv_projection_size = 64
 _attention_output_size = 100
 _comparison_output_size = 120
 
@@ -117,7 +117,7 @@ class AttentionMultiLCnn(BaseSiameseNet):
         
         with tf.name_scope('convolutional_layer'):
             X1_conv_1 = tf.layers.conv1d(
-                self._conv_pad(outputs_sen1),
+                self._conv_pad(self.embedded_x1),
                 _conv_projection_size,
                 _conv_filter_size,
                 padding='valid',
@@ -126,7 +126,7 @@ class AttentionMultiLCnn(BaseSiameseNet):
             )
             
             X2_conv_1 = tf.layers.conv1d(
-                self._conv_pad(outputs_sen2),
+                self._conv_pad(self.embedded_x2),
                 _conv_projection_size,
                 _conv_filter_size,
                 padding='valid',
