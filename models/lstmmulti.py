@@ -88,13 +88,13 @@ class AttentionMultiLCnn(BaseSiameseNet):
         
         
         stacked1, self.debug = stacked_multihead_attention(v_1,
-                                                       num_blocks=2,
+                                                       num_blocks=1,
                                                        num_heads=4,
                                                        use_residual=False,
                                                        is_training=self.is_training)
 
         stacked2, _ = stacked_multihead_attention(v_2,
-                                              num_blocks=2,
+                                              num_blocks=1,
                                               num_heads=4,
                                               use_residual=False,
                                               is_training=self.is_training,
