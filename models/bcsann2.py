@@ -123,7 +123,7 @@ class AttentionMatrixCnn(BaseSiameseNet):
             
         with tf.name_scope('comparison_layer'):
             X1_comp = tf.layers.dense(
-                tf.concat([self._X1_conv, self._beta ,tf.add(self._X1_conv,self.beta),tf.tensordot(self._X1_conv,self._beta)], 2),
+                tf.concat([self._X1_conv, self._beta ,tf.add(self._X1_conv,self._beta),tf.tensordot(self._X1_conv,self._beta)], 2),
                 _comparison_output_size,
                 activation=tf.nn.relu,
                 name='comparison_nn'
