@@ -169,5 +169,4 @@ class AttentionMatrixCnn(BaseSiameseNet):
             self._agg=tf.concat([X1_agg, X2_agg], 1)
             #self._agg1 = tf.concat([X1_agg, out1], 1)
             #self._agg2 = tf.concat([X2_agg, out2], 1)
-            
-return manhattan_similarity(X1_agg,X2_agg)
+            return manhattan_similarity(X1_agg,X2_agg)
