@@ -33,6 +33,7 @@ MODELS = {
     ModelType.twolayerbcnn.name:Attention2lyrCnn,
     ModelType.bcmultihead.name:AttentionMCnn,
     ModelType.bcsannlwr.name:AttentionDbCnn,
-    ModelType.lstmmulti.name:AttentionMultiLCnn
+    ModelType.lstmmulti.name:AttentionMultiLCnn,
+    ModelType.bcsann2.name:AttentionMatrixCnn
 }
 
