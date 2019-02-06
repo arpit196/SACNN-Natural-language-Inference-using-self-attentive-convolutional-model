@@ -132,7 +132,7 @@ class AttentionMatrixCnn(BaseSiameseNet):
                 tf.concat([X1_comp, self._beta1, tf.add(X1_comp,self._beta1),tf.multiply(self._beta1,X1_comp)], 2),
                 _comparison_output_size,
                 activation=tf.nn.relu,
-                name='comparison_nn'
+                name='comparison_nn1'
             )
             self._X1_comp = tf.multiply(
                 tf.layers.dropout(X1_comp1, rate=self.dropout, training=self.is_training),
@@ -150,7 +150,8 @@ class AttentionMatrixCnn(BaseSiameseNet):
                 tf.concat([X2_comp, self._alpha1, tf.add(X2_comp,self._alpha1), tf.multiply(self._alpha1,X2_comp)], 2),
                 _comparison_output_size,
                 activation=tf.nn.relu,
-                name='comparison_nn'
+                name='comparison_nn1',
+                reuse=True
             )
                            
             self._X2_comp = tf.multiply(
