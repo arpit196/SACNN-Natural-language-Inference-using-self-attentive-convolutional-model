@@ -11,7 +11,7 @@ import numpy as np
 
 _conv_projection_size = 64
 _attention_output_size = 100
-_comparison_output_size = 120
+_comparison_output_size = 64
 
 class AttentionMatrixCnn(BaseSiameseNet):
 
