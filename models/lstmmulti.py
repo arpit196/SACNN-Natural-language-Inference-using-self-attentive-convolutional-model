@@ -91,28 +91,28 @@ class AttentionMultiLCnn(BaseSiameseNet):
         outputs_sen1 = rnn_layer(v_1, 64, cell_type='GRU',bidirectional=True)
         outputs_sen2 = rnn_layer(v_2, 64, cell_type='GRU',bidirectional=True, reuse=True)
         
-        '''
-        stacked1, self.debug = stacked_multihead_attention(v_1,
+        
+        stacked1, self.debug = stacked_multihead_attention(output_sen1,
                                                        num_blocks=1,
                                                        num_heads=2,
                                                        use_residual=False,
                                                        is_training=self.is_training)
 
-        stacked2, _ = stacked_multihead_attention(v_2,
+        stacked2, _ = stacked_multihead_attention(outputs_sen2,
                                               num_blocks=1,
                                               num_heads=2,
                                               use_residual=False,
                                               is_training=self.is_training,
                                               reuse=True)
-        '''                                      
+                                             
         
-        #outputs_sen1 = self.rnn_layer1(stacked1, 64)
-        #outputs_sen2 = self.rnn_layer1(stacked2, 64,reuse=True)
+        outputs_sen11 = self.rnn_layer1(stacked1, 64)
+        outputs_sen22 = self.rnn_layer1(stacked2, 64,reuse=True)
         
         #out1 = tf.reduce_mean(stacked1, axis=1)
         #out2 = tf.reduce_mean(stacked2, axis=1)
-        out11= tf.reduce_mean(outputs_sen1, axis=1)
-        out12 = tf.reduce_mean(outputs_sen2, axis=1)
+        out11= tf.reduce_mean(outputs_sen11, axis=1)
+        out12 = tf.reduce_mean(outputs_sen22, axis=1)
         #return manhattan_similarity(outa, outb)
         
         with tf.name_scope('convolutional_layer'):
