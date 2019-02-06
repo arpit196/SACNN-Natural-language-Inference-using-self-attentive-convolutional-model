@@ -92,7 +92,7 @@ class AttentionMultiLCnn(BaseSiameseNet):
         outputs_sen2 = rnn_layer(v_2, 64, cell_type='GRU',bidirectional=True, reuse=True)
         
         
-        stacked1, self.debug = stacked_multihead_attention(output_sen1,
+        stacked1, self.debug = stacked_multihead_attention(outputs_sen1,
                                                        num_blocks=1,
                                                        num_heads=2,
                                                        use_residual=False,
