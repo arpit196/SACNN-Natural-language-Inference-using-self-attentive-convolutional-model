@@ -123,13 +123,13 @@ class AttentionMatrixCnn(BaseSiameseNet):
             
         with tf.name_scope('comparison_layer'):
             X1_comp = tf.layers.dense(
-                tf.concat([self._X1_conv, self._beta ,tf.add(self._X1_conv,self._beta),tf.tensordot(self._X1_conv,self._beta,1)], 2),
+                tf.concat([self._X1_conv, self._beta ,tf.add(self._X1_conv,self._beta),tf.multiply(self._X1_conv,self._beta,1)], 2),
                 _comparison_output_size,
                 activation=tf.nn.relu,
                 name='comparison_nn'
             )
             X1_comp1 = tf.layers.dense(
-                tf.concat([X1_comp, self._beta1, tf.add(X1_comp,self._beta1),tf.tensordot(self._beta1,X1_comp,1)], 2),
+                tf.concat([X1_comp, self._beta1, tf.add(X1_comp,self._beta1),tf.multiply(self._beta1,X1_comp,1)], 2),
                 _comparison_output_size,
                 activation=tf.nn.relu,
                 name='comparison_nn'
@@ -140,14 +140,14 @@ class AttentionMatrixCnn(BaseSiameseNet):
             )
             
             X2_comp = tf.layers.dense(
-                tf.concat([self._X2_conv, self._alpha, tf.add(self._X2_conv,self._alpha), tf.tensordot(self._X2_conv,self._alpha,1)], 2),
+                tf.concat([self._X2_conv, self._alpha, tf.add(self._X2_conv,self._alpha), tf.multiply(self._X2_conv,self._alpha,1)], 2),
                 _comparison_output_size,
                 activation=tf.nn.relu,
                 name='comparison_nn',
                 reuse=True
             )
             X2_comp1 = tf.layers.dense(
-                tf.concat([X2_comp, self._alpha1, tf.add(X2_comp,self._alpha1), tf.tensordot(self._alpha1,X2_comp,1)], 2),
+                tf.concat([X2_comp, self._alpha1, tf.add(X2_comp,self._alpha1), tf.multiply(self._alpha1,X2_comp,1)], 2),
                 _comparison_output_size,
                 activation=tf.nn.relu,
                 name='comparison_nn'
