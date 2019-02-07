@@ -120,8 +120,8 @@ class AttentionMatrixCnn(BaseSiameseNet):
             e = tf.matmul(e_X1, e_X2, transpose_b=True, name='e')
             
             self._alpha1 = tf.matmul(self._masked_softmax(e, sequence_len), self._X2_conv, name='beta2')
-        W=tf.get_variable("W",shape=(64,64),dtype=tf.float32,initializer=tf.random_normal_initializer())
-        W1=tf.get_variable("W1",shape=(64,64),dtype=tf.float32,initializer=tf.random_normal_initializer())
+        W=tf.get_variable("W",shape=(78,78),dtype=tf.float32,initializer=tf.random_normal_initializer())
+        W1=tf.get_variable("W1",shape=(78,78),dtype=tf.float32,initializer=tf.random_normal_initializer())
         with tf.name_scope('comparison_layer'):
             X1_comp = tf.layers.dense(
                 tf.concat([self._X1_conv, self._beta ,tf.add(self._X1_conv,self._beta),tf.multiply(tf.multiply(self._X1_conv,W),self._beta)], 2),
