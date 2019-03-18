@@ -76,8 +76,8 @@ def train(main_config, model_config, model_name, dataset_name):
                 
                 if v==0:
                     v=v+1
-                    feed_dict_train = {model.x1: sentence1_batch[0],
-                                   model.x2: sentence2_batch[0],
+                    feed_dict_train = {model.x1: sentence1_batch[0:2],
+                                   model.x2: sentence2_batch[0:2],
                                    model.is_training: True,
                                    model.labels: labels_batch}
                     
