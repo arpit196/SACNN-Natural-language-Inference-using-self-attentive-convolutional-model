@@ -98,6 +98,7 @@ def train(main_config, model_config, model_name, dataset_name):
                     
                     #f.savefig(os.path.join(HERE, 'attention_maps', text.replace('/', '')+'.pdf'), bbox_inches='tight')
                     f.show();
+                    plt.show();
                     
                 loss, _ = session.run([model.loss, model.opt], feed_dict=feed_dict_train)
 
