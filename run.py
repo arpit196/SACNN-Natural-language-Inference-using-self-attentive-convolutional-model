@@ -81,17 +81,22 @@ def train(main_config, model_config, model_name, dataset_name):
                                    model.is_training: True,
                                    model.labels: labels_batch}
                     
-                    train_accuracy, train_summary, train_e = session.run([model.accuracy, model.summary_op, model.e],
-                                                                feed_dict=feed_dict_train)
+                    #train_accuracy, train_summary, train_e = session.run([model.accuracy, model.summary_op, model.e],
+                    #                                            feed_dict=feed_dict_train)
+                    
+                    train_e = session.run([model.e], feed_dict=feed_dict_train)
+                    
                     plt.clf()
                     f = plt.figure(figsize=(8, 8.5))
                     ax = f.add_subplot(1, 1, 1)
+                    
+                    i = ax.imshow(activation_map, interpolation='nearest', cmap='gray')
                     
                     cbaxes = f.add_axes([0.2, 0, 0.6, 0.03])
                     cbar = f.colorbar(i, cax=cbaxes, orientation='horizontal')
                     cbar.ax.set_xlabel('Probability', labelpad=2)
                     
-                    f.savefig(os.path.join(HERE, 'attention_maps', text.replace('/', '')+'.pdf'), bbox_inches='tight')
+                    #f.savefig(os.path.join(HERE, 'attention_maps', text.replace('/', '')+'.pdf'), bbox_inches='tight')
                     f.show()
                     
                 loss, _ = session.run([model.loss, model.opt], feed_dict=feed_dict_train)
