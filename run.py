@@ -85,7 +85,7 @@ def train(main_config, model_config, model_name, dataset_name):
                     #                                            feed_dict=feed_dict_train)
                     
                     train_e = session.run([model.e], feed_dict=feed_dict_train)
-                    print(train_e[0].get_shape())
+                    print(train_e[0].shape)
                     plt.clf()
                     f = plt.figure(figsize=(8, 8.5))
                     ax = f.add_subplot(1, 1, 1)
