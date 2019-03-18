@@ -96,7 +96,7 @@ def train(main_config, model_config, model_name, dataset_name):
                     cbar = f.colorbar(i, cax=cbaxes, orientation='horizontal')
                     cbar.ax.set_xlabel('Probability', labelpad=2)
                     
-                    #f.savefig(os.path.join(HERE, 'attention_maps', text.replace('/', '')+'.pdf'), bbox_inches='tight')
+                    f.savefig('attention_maps.pdf'), bbox_inches='tight')
                     f.show();
                     plt.show();
                     
