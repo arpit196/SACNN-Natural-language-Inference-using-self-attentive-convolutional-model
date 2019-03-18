@@ -85,12 +85,12 @@ def train(main_config, model_config, model_name, dataset_name):
                     #                                            feed_dict=feed_dict_train)
                     
                     train_e = session.run([model.e], feed_dict=feed_dict_train)
-                    
+                    print(train_e.get_shape())
                     plt.clf()
                     f = plt.figure(figsize=(8, 8.5))
                     ax = f.add_subplot(1, 1, 1)
                     
-                    i = ax.imshow(train_e, interpolation='nearest', cmap='gray')
+                    i = ax.imshow(train_e[0], interpolation='nearest', cmap='gray')
                     
                     cbaxes = f.add_axes([0.2, 0, 0.6, 0.03])
                     cbar = f.colorbar(i, cax=cbaxes, orientation='horizontal')
