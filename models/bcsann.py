@@ -108,9 +108,9 @@ class AttentionSCnn(BaseSiameseNet):
             
             e_X2 = tf.layers.dense(self._X1_conv, _attention_output_size, activation=tf.nn.relu, name='attention_nn1', reuse=True)
             
-            e = tf.matmul(e_X1, e_X2, transpose_b=True, name='e')
+            self.e = tf.matmul(e_X1, e_X2, transpose_b=True, name='e')
             
-            self._beta1 = tf.matmul(self._masked_softmax(e, sequence_len), self._X1_conv, name='beta2') 
+            self._beta1 = tf.matmul(self._masked_softmax(self.e, sequence_len), self._X1_conv, name='beta2') 
             
         with tf.name_scope('self_attention2'):
             e_X1 = tf.layers.dense(self._X2_conv, _attention_output_size, activation=tf.nn.relu, name='attention_nn2')
