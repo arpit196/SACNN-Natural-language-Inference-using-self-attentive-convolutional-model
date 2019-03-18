@@ -5,6 +5,8 @@ import tensorflow as tf
 from tqdm import tqdm
 
 from data.dataset import Dataset, DATASETS
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 from models.model_type import MODELS
 from utils.batch_helper import BatchHelper
 from utils.config_helpers import MainConfig
@@ -62,7 +64,7 @@ def train(main_config, model_config, model_name, dataset_name):
             # small eval set for measuring dev accuracy
             dev_sentence1, dev_sentence2, dev_labels = dataset_helper.dev_instances()
             dev_labels = dev_labels.reshape(-1, 1)
-
+            v=0
             tqdm_iter = tqdm(range(num_batches), total=num_batches, desc="Batches", leave=False, postfix=metrics)
             for batch in tqdm_iter:
                 global_step += 1
@@ -71,6 +73,27 @@ def train(main_config, model_config, model_name, dataset_name):
                                    model.x2: sentence2_batch,
                                    model.is_training: True,
                                    model.labels: labels_batch}
+                
+                if v==0:
+                    v=v+1
+                    feed_dict_train = {model.x1: sentence1_batch[0],
+                                   model.x2: sentence2_batch[0],
+                                   model.is_training: True,
+                                   model.labels: labels_batch}
+                    
+                    train_accuracy, train_summary, train_e = session.run([model.accuracy, model.summary_op, model.e],
+                                                                feed_dict=feed_dict_train)
+                    plt.clf()
+                    f = plt.figure(figsize=(8, 8.5))
+                    ax = f.add_subplot(1, 1, 1)
+                    
+                    cbaxes = f.add_axes([0.2, 0, 0.6, 0.03])
+                    cbar = f.colorbar(i, cax=cbaxes, orientation='horizontal')
+                    cbar.ax.set_xlabel('Probability', labelpad=2)
+                    
+                    f.savefig(os.path.join(HERE, 'attention_maps', text.replace('/', '')+'.pdf'), bbox_inches='tight')
+                    f.show()
+                    
                 loss, _ = session.run([model.loss, model.opt], feed_dict=feed_dict_train)
 
                 if batch % main_cfg.eval_every == 0:
