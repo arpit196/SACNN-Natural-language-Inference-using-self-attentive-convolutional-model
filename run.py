@@ -64,7 +64,6 @@ def train(main_config, model_config, model_name, dataset_name):
             # small eval set for measuring dev accuracy
             dev_sentence1, dev_sentence2, dev_labels = dataset_helper.dev_instances()
             dev_labels = dev_labels.reshape(-1, 1)
-            v=0
             tqdm_iter = tqdm(range(num_batches), total=num_batches, desc="Batches", leave=False, postfix=metrics)
             for batch in tqdm_iter:
                 global_step += 1
@@ -73,32 +72,6 @@ def train(main_config, model_config, model_name, dataset_name):
                                    model.x2: sentence2_batch,
                                    model.is_training: True,
                                    model.labels: labels_batch}
-                
-                if v==0:
-                    v=v+1
-                    feed_dict_train = {model.x1: sentence1_batch,
-                                   model.x2: sentence2_batch,
-                                   model.is_training: True,
-                                   model.labels: labels_batch}
-                    
-                    #train_accuracy, train_summary, train_e = session.run([model.accuracy, model.summary_op, model.e],
-                    #                                            feed_dict=feed_dict_train)
-                    
-                    train_e = session.run([model.e], feed_dict=feed_dict_train)
-                    print(train_e[0][0].shape)
-                    plt.clf()
-                    f = plt.figure(figsize=(8, 8.5))
-                    ax = f.add_subplot(1, 1, 1)
-                    
-                    i = ax.imshow(train_e[0][0], interpolation='nearest', cmap='gray')
-                    
-                    cbaxes = f.add_axes([0.2, 0, 0.6, 0.03])
-                    cbar = f.colorbar(i, cax=cbaxes, orientation='horizontal')
-                    cbar.ax.set_xlabel('Probability', labelpad=2)
-                    
-                    f.savefig('attention_maps.pdf', bbox_inches='tight')
-                    f.show();
-                    plt.show();
                     
                 loss, _ = session.run([model.loss, model.opt], feed_dict=feed_dict_train)
 
@@ -136,7 +109,30 @@ def train(main_config, model_config, model_name, dataset_name):
             time_per_epoch.append(total_time)
 
             model_saver.save(session, global_step=global_step)
-            
+        
+        feed_dict_train = {model.x1: test_sentence1,
+                                   model.x2: test_sentence2,
+                                   model.is_training: False,
+                                   model.labels: test_labels}
+                    
+                    #train_accuracy, train_summary, train_e = session.run([model.accuracy, model.summary_op, model.e],
+                    #                                            feed_dict=feed_dict_train)
+                    
+        train_e = session.run([model.e], feed_dict=feed_dict_train)
+        plt.clf()
+        f = plt.figure(figsize=(8, 8.5))
+        ax = f.add_subplot(1, 1, 1)
+                    
+        i = ax.imshow(train_e[0][0], interpolation='nearest', cmap='gray')
+                    
+        cbaxes = f.add_axes([0.2, 0, 0.6, 0.03])
+        cbar = f.colorbar(i, cax=cbaxes, orientation='horizontal')
+        cbar.ax.set_xlabel('Probability', labelpad=2)
+                    
+        f.savefig('attention_maps.pdf', bbox_inches='tight')
+        f.show();
+        plt.show();
+        
         feed_dict_test = {model.x1: test_sentence1,
                                      model.x2: test_sentence2,
                                      model.is_training: False,
