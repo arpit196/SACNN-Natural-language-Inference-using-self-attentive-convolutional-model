@@ -121,27 +121,10 @@ class AttentionSCnn(BaseSiameseNet):
             
             self._alpha1 = tf.matmul(self._masked_softmax(e, sequence_len), self._X2_conv, name='beta2')
             
-        with tf.name_scope('self_attention3'):
-            e_X1 = tf.layers.dense(self._X1_conv, _attention_output_size, activation=tf.nn.relu, name='attention_nn3')
-            
-            e_X2 = tf.layers.dense(self._X1_conv, _attention_output_size, activation=tf.nn.relu, name='attention_nn3', reuse=True)
-            
-            e = tf.matmul(e_X1, e_X2, transpose_b=True, name='e')
-            
-            self._beta2 = tf.matmul(self._masked_softmax(e, sequence_len), self._X1_conv, name='beta2') 
-            
-        with tf.name_scope('self_attention4'):
-            e_X1 = tf.layers.dense(self._X2_conv, _attention_output_size, activation=tf.nn.relu, name='attention_nn4')
-            
-            e_X2 = tf.layers.dense(self._X2_conv, _attention_output_size, activation=tf.nn.relu, name='attention_nn4', reuse=True)
-            
-            e = tf.matmul(e_X1, e_X2, transpose_b=True, name='e')
-            
-            self._alpha2 = tf.matmul(self._masked_softmax(e, sequence_len), self._X2_conv, name='beta2')
             
         with tf.name_scope('comparison_layer'):
             X1_comp = tf.layers.dense(
-                tf.concat([self._X1_conv, self._beta, self._beta1, self._beta2], 2),
+                tf.concat([self._X1_conv, self._beta, self._beta1], 2),
                 _comparison_output_size,
                 activation=tf.nn.relu,
                 name='comparison_nn'
@@ -152,7 +135,7 @@ class AttentionSCnn(BaseSiameseNet):
             )
             
             X2_comp = tf.layers.dense(
-                tf.concat([self._X2_conv, self._alpha,self._alpha1,self._alpha2], 2),
+                tf.concat([self._X2_conv, self._alpha, self._alpha1], 2),
                 _comparison_output_size,
                 activation=tf.nn.relu,
                 name='comparison_nn',
