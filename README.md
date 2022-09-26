@@ -1,10 +1,10 @@
 ![](https://img.shields.io/badge/Python-3.6-blue.svg) ![](https://img.shields.io/badge/TensorFlow-1.5.0-blue.svg) ![](https://img.shields.io/badge/License-MIT-blue.svg)
 
-# Siamese Deep Neural Networks for semantic similarity.
-This repository contains implementation of Siamese Neural Networks in Tensorflow built based on 3 different and major deep learning architectures:
+# Self-Attentive convolutional Neural Network for semantic similarity.
+This repository contains implementation of a self-attentive convolutional Neural Networks in Tensorflow built based on 3 different and major deep learning architectures:
 - Convolutional Neural Networks
-- Recurrent Neural Networks
-- Multihead Attention Networks
+- Multihead self Attention on sentences
+- Cross Attention on sentences
 
 The main reason of creating this repository is to compare well-known implementaions of Siamese Neural Networks available on GitHub mainly built upon CNN and RNN architectures with Siamese Neural Network built based on multihead attention mechanism originally proposed in Transformer model from [Attention is all you need](https://papers.nips.cc/paper/7181-attention-is-all-you-need.pdf) paper.
 
